@@ -1,0 +1,17 @@
+---
+title: Current Projects
+---
+## Stereotactic Radiosurgical (SRS) Outcomes for Patients with Brain and Spine Metastases
+
+<img src="cle_clinic_banner.png" style="height: 100%; width: 100%; object-fit: contain" onclick="window.open('https://my.clevelandclinic.org/staff/4568-lilyana-angelov', 'blank');"/>
+
+Dr. Lilyana Angelov has welcomed me into her research group at the Rosa Ella Burkhart Brain Tumor & Neuro-Oncology Center in the Department of Neurosurgery at Cleveland Clinic. In her research, Dr. Angelov investigates the effectiveness of different SRS techniques to treat brain and spine tumor metastases. As I become a part of her lab, we are in the process of defining a project that I will lead. Updates on these research efforts are forthcoming.
+
+----
+
+## Enhanced Recovery After Surgery (ERAS) Protocol for Tether Cord Syndrome (TCS)
+
+<img src="rainbow_babies_banner.png" style="height: 100%; width: 100%; object-fit: contain" onclick="window.open('https://www.uhhospitals.org/doctors/Tomei-Krystal-1659505170', 'blank');"/>
+
+Since I have started at CWRU SOM, I have become involved with Dr. Krystal Tomei's research group at University Hospitals Rainbow Babies and Childrens Hospital. The current project I am working on is determining the efficacy of utilizing an enhanced recovery after surgery (ERAS) protocol in pediatric patients who have undergone detethering surgery to correct TCS. The secondary objective of this study is to see whether implementing a standardized ERAS protocol for patients who undergo detethering helps to mitigate post-operative opiate consumption.  
+

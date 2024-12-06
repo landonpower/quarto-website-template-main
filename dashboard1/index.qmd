@@ -1,0 +1,23 @@
+---
+title: "Previous Research"
+---
+
+## Cognitive Impacts of Sickle Cell Disease (SCD)
+
+<img src="childrens_stl_banner.png" style="height: 100%; width: 100%; object-fit: contain" onclick="window.open(&apos;https://profiles.wustl.edu/en/persons/melanie-fields&apos;, &apos;blank&apos;);"/>
+
+In my research with Dr. Fields, I explored the effect of SCD on the structural and functional connectivity of the brain in pediatric patients receiving care at St. Louis Children's Hospital. Some of the notable findings from my research with the Fields lab were that we observed an acute reversal in cognitive deficits and decreased functional connectivity in the fronto-parietal network after a single RBC transfusion. I also explored other MR biomarkers of cerebral metabolic stress, including oxygen extraction fraction (OEF) and its relationship to structural and functional connectivity in children with SCD. Some of the projects that I worked on while with the Fields lab were:
+
+### Peer Reviewed Articles:
+
+-   <a href="https://onlinelibrary.wiley.com/doi/10.1002/pbc.29717" target="_blank">GRAPES: Trivia game increases sickle cell disease knowledge in patients and providers and mitigates healthcare biases</a>
+
+-   <a href="https://www.neurology.org/doi/10.1212/WNL.0000000000209429" target="_blank">Reversibility of Cognitive Deficits and Functional Connectivity with Transfusion in Children with SCD</a>
+
+-   <a href="https://onlinelibrary.wiley.com/doi/10.1111/bjh.19642" target="_blank">Cognitive Outcomes of Children and Adults with SCA</a>
+
+::: {layout-ncol="2"}
+![](ash_2022.jpeg)
+
+![](wustl_2024.jpeg)
+:::

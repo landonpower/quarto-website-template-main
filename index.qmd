@@ -1,0 +1,42 @@
+---
+about:
+  template: jolla
+  id: about-block
+  image: "img/MS_Profile.jpg"
+  links:
+    - icon: book
+      text: ResearchGate
+      href: https://www.researchgate.net/profile/Landon-Power
+    - icon: mortarboard
+      text: GoogleScholar
+      href: https://scholar.google.com/citations?user=ab-TKp4AAAAJ&hl=en
+    - icon: twitter
+      text: Twitter
+      href: https://x.com/landon_power
+      # change once I make account:
+    - icon: github
+      text: Github
+      href: https://github.com/marvinschmitt
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/landon-power-90a45a184/
+    - icon: envelope
+      text: Email
+      href: "mailto:lcp68@case.edu"  
+---
+
+::: {#about-block}
+:::
+
+# Welcome to my website!
+
+I am Landon Power, a medical student and researcher at Case Western Reserve University School of Medicine. I am in Dr. Lilyana Angelov's research group at the Cleveland Clinic Brain Tumor and Neuro-Oncology Center.
+
+My hometown is Hastings, Nebraska, a small city in the mid-western part of the state. I completed my undergraduate education at Washington University in St. Louis. While in St. Louis, I worked as a student researcher at St. Louis Children's Hospital in hematology/oncology. In Dr. Melanie Fields's lab, I did research on the cognitive impacts of sickle cell disease (SCD) and used MRI to quantify the structural and functional affect of SCD on the brain.
+
+Currently, my research interests are focused in stereotactic radiosurgery (SRS/gamma knife surgery). I have recently joined the Angelov lab and am in the process of defining my own project to explore surgical outcomes of SRS for brain and spine tumors. 
+
+As a medical student, I am involved in student leadership through the Student Committee on Medical Education (SCME). I am the student representative for Block 6: Cognition, Sensation, and Movement, which covers Neurology and the Behavioral Sciences. In this role, I convey student feedback to administrators and act as the student representative on the curricular design team for Block 6.
+
+On my website, you can find my published scholarly articles and papers as well as descriptions of the current projects I am working on in research. Please feel free to [contact me](mailto:lcp68@case.edu) if you have questions or thoughts.
+

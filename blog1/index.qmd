@@ -1,0 +1,130 @@
+---
+title: "CHANGE TITLE AFTER ANALYSIS!"
+author: "Landon Power"
+date: last-modified
+format: 
+  html:
+    editor: visual
+    toc: true
+    toc_float: true
+    number-sections: true
+    embed-resources: true
+    date-format: iso
+    theme: paper
+---
+
+# Setup and Data Ingest
+
+## Setup
+
+```{r, message = FALSE, warning = FALSE}
+library(janitor)
+library(knitr)
+library(magrittr)
+library(broom)
+library(naniar)
+library(patchwork)
+library(modelsummary)
+library(pwr)
+library(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data
+library(tidyverse)
+
+source("data/Love-boost.R")
+
+theme_set(theme_light())  # or use theme_set(theme_bw())
+knitr::opts_chunk$set(comment=NA)
+```
+
+## Data Ingest
+
+I ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.
+
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#demographic <- haven::read_xpt("data/P_DEMO.xpt")
+
+#saveRDS(demographic, "data/P_DEMO.Rds")
+
+# Simply read the tibble after data are saved
+demographic <- readRDS("data/P_DEMO.Rds")
+```
+
+I ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.
+
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#biochem <- haven::read_xpt("data/P_BIOPRO.xpt")
+
+#saveRDS(biochem, "data/P_BIOPRO.Rds")
+
+# Simply read the tibble after data are saved
+biochem <- readRDS("data/P_BIOPRO.Rds")
+```
+
+Finally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.
+
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#alcohol <- haven::read_xpt("data/P_ALQ.xpt")
+
+#saveRDS(alcohol, "data/P_ALQ.Rds")
+
+# Simply read the tibble after data are saved
+alcohol <- readRDS("data/P_ALQ.Rds")
+```
+
+# Cleaning the Data
+
+I then merged the NHANES files before cleaning and selecting my variables.
+
+```{r}
+full_uncleaned1 <- left_join(demographic, biochem, by = "SEQN")
+```
+
+```{r}
+full_uncleaned2 <- left_join(full_uncleaned1, alcohol, by = "SEQN")
+```
+
+Then I cleaned the variables and selected only the variables I will use in analysis. I first cleaned the names of all the variables in the `full_uncleaned2` dataset.
+
+```{r}
+full <- full_uncleaned2 %>%
+  clean_names() %>%
+  mutate(across(where(is_character), as_factor))
+```
+
+I then selected the variables I will analyze and refined the observations to include only subjects who:
+
+-   had a `ridstatr` value of 2, meaning they were both interviewed and examined (N = 14,300)
+
+-   had a `ridageyr` between 21 and 79 years old (N = 7,853)
+
+For my analysis, I then filtered to the proper variables I will analyze:
+
+-   Analysis A: two quantitative variables
+
+    -   alanine aminotransferase (ALT, in U/L)
+
+    -   aspartate aminotransferase (AST, in U/L)
+
+-   Analysis B: outcome (ALT) and binary categorical variable (gender)
+
+-   Analysis C: outcome (ALT) and multi-categorical variable (Race/Hispanic origin)
+
+-   Analysis E: J x K table of two categorical variables
+
+    -   J (2-5 levels): Ever had 4/5 or more drinks every day? (2 levels, Yes/No)
+
+    -   K (3-5 levels): Race/Hispanic origin (5 levels)
+
+```{r}
+liver_damage <- full %>%
+  filter(ridstatr == "2") %>%
+  filter(between(ridageyr, 21, 79)) %>%
+  select(seqn, ridstatr, ridageyr, lbxsatsi, lbxsassi, 
+         riagendr, ridreth1, alq151)
+
+head(liver_damage)
+```
+
+# Codebook and Data Description

@@ -1,0 +1,15 @@
+{
+  "hash": "c5ea1dca51eb0f1efe114e27a2dc1fcc",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"CHANGE TITLE AFTER ANALYSIS!\"\nauthor: \"Landon Power\"\ndate: last-modified\nformat: \n  html:\n    editor: visual\n    toc: true\n    toc_float: true\n    number-sections: true\n    embed-resources: true\n    date-format: iso\n    theme: paper\n---\n\n\n\n# Setup and Data Ingest\n\n### Setup\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(NHANES)\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)\n```\n:::\n\n\n\n### Data Ingest\n\n\n\n::: {.cell}\n\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
