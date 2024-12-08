@@ -74,14 +74,14 @@
     "href": "blog1/index.html",
     "title": "CHANGE TITLE AFTER ANALYSIS!",
     "section": "",
-    "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)\n\n\n\n\nI ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#demographic &lt;- haven::read_xpt(\"data/P_DEMO.xpt\")\n\n#saveRDS(demographic, \"data/P_DEMO.Rds\")\n\n# Simply read the tibble after data are saved\ndemographic &lt;- readRDS(\"data/P_DEMO.Rds\")\n\nI ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#biochem &lt;- haven::read_xpt(\"data/P_BIOPRO.xpt\")\n\n#saveRDS(biochem, \"data/P_BIOPRO.Rds\")\n\n# Simply read the tibble after data are saved\nbiochem &lt;- readRDS(\"data/P_BIOPRO.Rds\")\n\nFinally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#alcohol &lt;- haven::read_xpt(\"data/P_ALQ.xpt\")\n\n#saveRDS(alcohol, \"data/P_ALQ.Rds\")\n\n# Simply read the tibble after data are saved\nalcohol &lt;- readRDS(\"data/P_ALQ.Rds\")"
+    "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(Hmisc)\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)\n\n\n\n\nI ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#demographic &lt;- haven::read_xpt(\"data/P_DEMO.xpt\")\n\n#saveRDS(demographic, \"data/P_DEMO.Rds\")\n\n# Simply read the tibble after data are saved\ndemographic &lt;- readRDS(\"data/P_DEMO.Rds\")\n\nI ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#biochem &lt;- haven::read_xpt(\"data/P_BIOPRO.xpt\")\n\n#saveRDS(biochem, \"data/P_BIOPRO.Rds\")\n\n# Simply read the tibble after data are saved\nbiochem &lt;- readRDS(\"data/P_BIOPRO.Rds\")\n\nFinally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#alcohol &lt;- haven::read_xpt(\"data/P_ALQ.xpt\")\n\n#saveRDS(alcohol, \"data/P_ALQ.Rds\")\n\n# Simply read the tibble after data are saved\nalcohol &lt;- readRDS(\"data/P_ALQ.Rds\")"
   },
   {
     "objectID": "blog1/index.html#setup",
     "href": "blog1/index.html#setup",
     "title": "CHANGE TITLE AFTER ANALYSIS!",
     "section": "",
-    "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)"
+    "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(Hmisc)\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)"
   },
   {
     "objectID": "blog1/index.html#data-ingest",
@@ -89,6 +89,139 @@
     "title": "CHANGE TITLE AFTER ANALYSIS!",
     "section": "",
     "text": "I ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#demographic &lt;- haven::read_xpt(\"data/P_DEMO.xpt\")\n\n#saveRDS(demographic, \"data/P_DEMO.Rds\")\n\n# Simply read the tibble after data are saved\ndemographic &lt;- readRDS(\"data/P_DEMO.Rds\")\n\nI ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#biochem &lt;- haven::read_xpt(\"data/P_BIOPRO.xpt\")\n\n#saveRDS(biochem, \"data/P_BIOPRO.Rds\")\n\n# Simply read the tibble after data are saved\nbiochem &lt;- readRDS(\"data/P_BIOPRO.Rds\")\n\nFinally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#alcohol &lt;- haven::read_xpt(\"data/P_ALQ.xpt\")\n\n#saveRDS(alcohol, \"data/P_ALQ.Rds\")\n\n# Simply read the tibble after data are saved\nalcohol &lt;- readRDS(\"data/P_ALQ.Rds\")"
+  },
+  {
+    "objectID": "blog1/index.html#codebook",
+    "href": "blog1/index.html#codebook",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "3.1 Codebook",
+    "text": "3.1 Codebook\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\n\n\n\n\nSEQN\nID\nRespondent sequence number\n\n\nlbxsatsi\nQuant\nAlanine aminotransferase (ALT; in U/L)\n\n\nlbxsassi\nQuant\nAspartate aminotransferase (AST; in U/L)\n\n\nriagendr\nBinary\nGender\n\n\nridreth1\n5-Cat\nRace/Hispanic origin (1 = Mexican American, 2 = Other Hispanic, 3 = Non-Hispanic White, 4 = Non-Hispanic Black, 5 = Other Race, Including Multi-Racial)\n\n\nalq151\nBinary\nPeriod of life where subject ever had more than 4/5 drinks every day? (1 = Yes, 2 = No, 7 = Refused, 9 = Don’t know)"
+  },
+  {
+    "objectID": "blog1/index.html#analytic-tibble",
+    "href": "blog1/index.html#analytic-tibble",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "3.2 Analytic Tibble",
+    "text": "3.2 Analytic Tibble\nThe complete tibble and a summary of the variables that are missing values is shown below.\n\nliver_damage\n\n# A tibble: 7,853 × 8\n     seqn ridstatr ridageyr lbxsatsi lbxsassi riagendr ridreth1           alq151\n    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;              &lt;fct&gt; \n 1 109266        2       29       15       14 female   Other/Multi-Racial no    \n 2 109271        2       49        8       14 male     Non-Hispanic White yes   \n 3 109273        2       36       35       27 male     Non-Hispanic White no    \n 4 109274        2       68       19       20 male     Other/Multi-Racial no    \n 5 109282        2       76       17       19 male     Non-Hispanic White no    \n 6 109284        2       44       16       15 female   Mexican American   &lt;NA&gt;  \n 7 109286        2       33       10       13 female   Other/Multi-Racial &lt;NA&gt;  \n 8 109290        2       68       19       18 female   Non-Hispanic Black no    \n 9 109291        2       42       11       25 female   Other/Multi-Racial &lt;NA&gt;  \n10 109292        2       58       21       18 male     Other Hispanic     no    \n# ℹ 7,843 more rows\n\n\n\ngg_miss_var(liver_damage)\n\n\n\n\n\n\n\nmiss_var_summary(liver_damage)\n\n# A tibble: 8 × 3\n  variable n_miss pct_miss\n  &lt;chr&gt;     &lt;int&gt;    &lt;num&gt;\n1 alq151     1149    14.6 \n2 lbxsassi    637     8.11\n3 lbxsatsi    606     7.72\n4 seqn          0     0   \n5 ridstatr      0     0   \n6 ridageyr      0     0   \n7 riagendr      0     0   \n8 ridreth1      0     0"
+  },
+  {
+    "objectID": "blog1/index.html#data-summary",
+    "href": "blog1/index.html#data-summary",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "3.3 Data Summary",
+    "text": "3.3 Data Summary\n\n3.3.1 Alanine aminotransferase (ALT; in U/L)\n\ndescribe(liver_damage$lbxsatsi)\n\nliver_damage$lbxsatsi : Alanine Aminotransferase (ALT) (U/L) \n       n  missing distinct     Info     Mean      Gmd      .05      .10 \n    7247      606      146    0.999    22.59     14.8        9       10 \n     .25      .50      .75      .90      .95 \n      13       18       26       39       51 \n\nlowest :   2   3   4   5   6, highest: 208 211 213 338 682\n\n\n\n\n3.3.2 Aspartate aminotransferase (AST; in U/L)\n\ndescribe(liver_damage$lbxsassi)\n\nliver_damage$lbxsassi : Aspartate Aminotransferase (AST) (U/L) \n       n  missing distinct     Info     Mean      Gmd      .05      .10 \n    7216      637      122    0.997    21.95    10.02    12.00    13.00 \n     .25      .50      .75      .90      .95 \n   16.00    19.00    24.00    31.00    38.25 \n\nlowest :   6   7   8   9  10, highest: 218 272 294 307 489\n\n\n\n\n3.3.3 Gender\n\ndescribe(liver_damage$riagendr)\n\nliver_damage$riagendr \n       n  missing distinct \n    7853        0        2 \n                        \nValue        male female\nFrequency    3794   4059\nProportion  0.483  0.517\n\n\n\n\n3.3.4 Race/Hispanic origin\n\ndescribe(liver_damage$ridreth1)\n\nliver_damage$ridreth1 \n       n  missing distinct \n    7853        0        5 \n                                                                   \nValue        Mexican American     Other Hispanic Non-Hispanic White\nFrequency                 945                847               2491\nProportion              0.120              0.108              0.317\n                                                \nValue      Non-Hispanic Black Other/Multi-Racial\nFrequency                2179               1391\nProportion              0.277              0.177\n\n\n\n\n3.3.5 Period of life where subject ever had more than 4/5 drinks every day?\n\ndescribe(liver_damage$alq151)\n\nliver_damage$alq151 \n       n  missing distinct \n    6704     1149        4 \n                                                      \nValue             yes         no    Refused Don't Know\nFrequency        1061       5633          1          9\nProportion      0.158      0.840      0.000      0.001"
+  },
+  {
+    "objectID": "blog1/index.html#the-question",
+    "href": "blog1/index.html#the-question",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "4.1 The Question",
+    "text": "4.1 The Question\nTo find a good proxy for liver damage, I decided to compares the means of two quantitative variables from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7216 NHANES participants with complete AST values.\nQuestion: Since both elevated ALT and AST are indicators of liver damage and since these variables are collected on each of the participants and can be considered paired samples, do the means of these two enzymmatic markers of liver function closely approximate each other, such that they are not significantly different?\nExpectation: Both ALT and AST are functionally related enzymmatic markers, even though elevated ALT is more characteristic of liver damage. In this case, I expect there to be no significant difference between the means of alanine aminotransferase and aspartate aminotransferase values. If there is no significant difference, this would indicate that either of these variables could be used as a proxy for liver damage in future analysis."
+  },
+  {
+    "objectID": "blog1/index.html#describing-the-data",
+    "href": "blog1/index.html#describing-the-data",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "4.2 Describing the Data",
+    "text": "4.2 Describing the Data\n\n4.2.1 Variables\nThe variable lbxsatsi is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.\nThe variable lbxsassi is the aspartate aminotransferase (AST; in U/L) level measured in the blood serum of the NHANES participants. The AST was also recorded in units/liter. This enzyme is present in the liver, heart, brain, kidneys, and muscles, but is classically used as a less-specific marker of liver damage.\n\n\n4.2.2 Numerical Summaries/Visualizations\n\n4.2.2.1 Visualization\nFirst, the data was visualized to observe whether there appeared to be an association between ALT and AST. The dataset was filtered to the complete cases that had recorded ALT and AST values for this analysis.\n\nliver_damage_analA &lt;- liver_damage %&gt;%\n  filter(complete.cases(lbxsatsi, lbxsassi))\n\nliver_damage_analA %&gt;%\n  ggplot(., aes(x = lbxsatsi, y = lbxsassi)) +\n  geom_point() +\n  geom_smooth(method = \"lm\", col = \"red\",\n              se = TRUE, formula = y ~ x) +\n  theme(aspect.ratio = 1) +\n  labs(caption = \"Each subject had an ALT (in U/L) and AST (in U/L)\")\n\n\n\n\n\n\n\n\nSince ALT and AST are paired by participant, we can calculate an additional variable, the difference between ALT and AST values to make a visual comparison of the difference between the two values more apparent. The difference in ALT and AST was calculated as ALT minus AST.\n\nliver_damage_analA &lt;- liver_damage_analA %&gt;%\n  mutate(diff_ALT_AST = lbxsatsi - lbxsassi)\n\nAfter calculating the difference in ALT and AST, I constructed a boxplot to visualize the distribution of the difference.\n\nggplot(data = liver_damage_analA, aes(x = diff_ALT_AST, y = \"\")) +\n  geom_violin(fill = \"dodgerblue\") +\n  geom_boxplot(width = 0.3, outlier.size = 3) +\n  stat_summary(fun = \"mean\", geom = \"point\",\n               shape = 23, size = 4, fill = \"blue\") +\n  labs(x = \"ALT - AST (difference in alanine and aspartate aminotransferase levels)\",\n       y = \"\", title = \"Distribution of Liver Enzyme Differences\")\n\n\n\n\n\n\n\n\n\n\n\n4.2.3 Numerical Summaries\nWhile it appears that most of the differences in ALT and AST values lie close to zero, numerical summaries for each variable and the difference of ALT minus AST were calculated before the main analysis was completed.\n\nsumm_anala &lt;- as_tibble(bind_rows(\n  mosaic::favstats(~ lbxsatsi, data = liver_damage_analA),\n  mosaic::favstats(~ lbxsassi, data = liver_damage_analA),\n  mosaic::favstats(~ diff_ALT_AST, data = liver_damage_analA))) %&gt;%\n  mutate(item = c(\"lbxsatsi\", \"lbxsassi\", \"diff_ALT_AST\")) %&gt;%\n  select(item, n, mean, sd, min, median, max)\n\nRegistered S3 method overwritten by 'mosaic':\n  method                           from   \n  fortify.SpatialPolygonsDataFrame ggplot2\n\nsumm_anala %&gt;% kable()\n\n\n\n\nitem\nn\nmean\nsd\nmin\nmedian\nmax\n\n\n\n\nlbxsatsi\n7216\n22.578575\n18.94270\n2\n18\n682\n\n\nlbxsassi\n7216\n21.949279\n14.72411\n6\n19\n489\n\n\ndiff_ALT_AST\n7216\n0.629296\n10.98709\n-148\n-1\n193"
+  },
+  {
+    "objectID": "blog1/index.html#main-analysis",
+    "href": "blog1/index.html#main-analysis",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "4.3 Main Analysis",
+    "text": "4.3 Main Analysis\nContinue here 12/08/2024… Test to see if worked"
+  },
+  {
+    "objectID": "blog1/index.html#conclusions",
+    "href": "blog1/index.html#conclusions",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "4.4 Conclusions",
+    "text": "4.4 Conclusions"
+  },
+  {
+    "objectID": "blog1/index.html#the-question-1",
+    "href": "blog1/index.html#the-question-1",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "5.1 The Question",
+    "text": "5.1 The Question"
+  },
+  {
+    "objectID": "blog1/index.html#describing-the-data-1",
+    "href": "blog1/index.html#describing-the-data-1",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "5.2 Describing the Data",
+    "text": "5.2 Describing the Data"
+  },
+  {
+    "objectID": "blog1/index.html#main-analysis-1",
+    "href": "blog1/index.html#main-analysis-1",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "5.3 Main Analysis",
+    "text": "5.3 Main Analysis"
+  },
+  {
+    "objectID": "blog1/index.html#conclusions-1",
+    "href": "blog1/index.html#conclusions-1",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "5.4 Conclusions",
+    "text": "5.4 Conclusions"
+  },
+  {
+    "objectID": "blog1/index.html#the-question-2",
+    "href": "blog1/index.html#the-question-2",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "6.1 The Question",
+    "text": "6.1 The Question"
+  },
+  {
+    "objectID": "blog1/index.html#describing-the-data-2",
+    "href": "blog1/index.html#describing-the-data-2",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "6.2 Describing the Data",
+    "text": "6.2 Describing the Data"
+  },
+  {
+    "objectID": "blog1/index.html#main-analysis-2",
+    "href": "blog1/index.html#main-analysis-2",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "6.3 Main Analysis",
+    "text": "6.3 Main Analysis"
+  },
+  {
+    "objectID": "blog1/index.html#conclusions-2",
+    "href": "blog1/index.html#conclusions-2",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "6.4 Conclusions",
+    "text": "6.4 Conclusions"
+  },
+  {
+    "objectID": "blog1/index.html#the-question-3",
+    "href": "blog1/index.html#the-question-3",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "7.1 The Question",
+    "text": "7.1 The Question"
+  },
+  {
+    "objectID": "blog1/index.html#describing-the-data-3",
+    "href": "blog1/index.html#describing-the-data-3",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "7.2 Describing the Data",
+    "text": "7.2 Describing the Data"
+  },
+  {
+    "objectID": "blog1/index.html#main-analysis-3",
+    "href": "blog1/index.html#main-analysis-3",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "7.3 Main Analysis",
+    "text": "7.3 Main Analysis"
+  },
+  {
+    "objectID": "blog1/index.html#conclusions-3",
+    "href": "blog1/index.html#conclusions-3",
+    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "section": "7.4 Conclusions",
+    "text": "7.4 Conclusions"
   },
   {
     "objectID": "index.html",

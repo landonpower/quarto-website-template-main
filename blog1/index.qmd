@@ -149,7 +149,7 @@ head(liver_damage)
 ## Codebook
 
 | Variable | Type | Description |
-|:----------------------:|:----------------------:|:----------------------:|
+|:--:|:--:|:--:|
 | **SEQN** | ID | Respondent sequence number |
 | **lbxsatsi** | Quant | Alanine aminotransferase (ALT; in U/L) |
 | **lbxsassi** | Quant | Aspartate aminotransferase (AST; in U/L) |
@@ -171,7 +171,7 @@ gg_miss_var(liver_damage)
 miss_var_summary(liver_damage)
 ```
 
-## Data Summary 
+## Data Summary
 
 ### Alanine aminotransferase (ALT; in U/L)
 
@@ -276,7 +276,7 @@ summ_anala %>% kable()
 
 ## Main Analysis
 
-Continue here 12/08/2024...
+Continue here 12/08/2024... Test to see if worked
 
 ## Conclusions
 
