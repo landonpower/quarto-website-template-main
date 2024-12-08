@@ -27,6 +27,7 @@ library(patchwork)
 library(modelsummary)
 library(pwr)
 library(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data
+library(Hmisc)
 library(tidyverse)
 
 source("data/Love-boost.R")
@@ -122,11 +123,189 @@ liver_damage <- full %>%
   filter(ridstatr == "2") %>%
   filter(between(ridageyr, 21, 79)) %>%
   select(seqn, ridstatr, ridageyr, lbxsatsi, lbxsassi, 
-         riagendr, ridreth1, alq151)
+         riagendr, ridreth1, alq151) %>%
+  mutate(riagendr = fct_recode(factor(riagendr), 
+                            "male" = "1", 
+                            "female" = "2")) %>%
+  mutate(ridreth1 = fct_recode(factor(ridreth1), 
+                            "Mexican American" = "1", 
+                            "Other Hispanic" = "2",
+                            "Non-Hispanic White" = "3",
+                            "Non-Hispanic Black" = "4",
+                            "Other/Multi-Racial" = "5")) %>%
+  mutate(alq151 = fct_recode(factor(alq151), 
+                            "yes" = "1", 
+                            "no" = "2",
+                            "Refused" = "7",
+                            "Don't Know" = "9"))
 
 head(liver_damage)
 ```
 
 # Codebook and Data Description
 
-Continue here on 12/06/2024...
+7853 adults ages 21-79 participating in the NHANES 2017-2020 with data on the variables listed below. The data will be filtered to the complete cases in each discrete analysis as it is completed.
+
+## Codebook
+
+| Variable | Type | Description |
+|:----------------------:|:----------------------:|:----------------------:|
+| **SEQN** | ID | Respondent sequence number |
+| **lbxsatsi** | Quant | Alanine aminotransferase (ALT; in U/L) |
+| **lbxsassi** | Quant | Aspartate aminotransferase (AST; in U/L) |
+| **riagendr** | Binary | Gender |
+| **ridreth1** | 5-Cat | Race/Hispanic origin (1 = Mexican American, 2 = Other Hispanic, 3 = Non-Hispanic White, 4 = Non-Hispanic Black, 5 = Other Race, Including Multi-Racial) |
+| **alq151** | Binary | Period of life where subject ever had more than 4/5 drinks every day? (1 = Yes, 2 = No, 7 = Refused, 9 = Don't know) |
+
+## Analytic Tibble
+
+The complete tibble and a summary of the variables that are missing values is shown below.
+
+```{r}
+liver_damage
+```
+
+```{r}
+gg_miss_var(liver_damage)
+
+miss_var_summary(liver_damage)
+```
+
+## Data Summary 
+
+### Alanine aminotransferase (ALT; in U/L)
+
+```{r}
+describe(liver_damage$lbxsatsi)
+```
+
+### Aspartate aminotransferase (AST; in U/L)
+
+```{r}
+describe(liver_damage$lbxsassi)
+```
+
+### Gender
+
+```{r}
+describe(liver_damage$riagendr)
+```
+
+### Race/Hispanic origin
+
+```{r}
+describe(liver_damage$ridreth1)
+```
+
+### Period of life where subject ever had more than 4/5 drinks every day?
+
+```{r}
+describe(liver_damage$alq151)
+```
+
+# Analysis A: Comparing 2 Means with Paired Samples
+
+## The Question
+
+To find a good proxy for liver damage, I decided to compares the means of two quantitative variables from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7216 NHANES participants with complete AST values.
+
+**Question:** Since both elevated ALT and AST are indicators of liver damage and since these variables are collected on each of the participants and can be considered paired samples, do the means of these two enzymmatic markers of liver function closely approximate each other, such that they are not significantly different?
+
+**Expectation:** Both ALT and AST are functionally related enzymmatic markers, even though elevated ALT is more characteristic of liver damage. In this case, I expect there to be no significant difference between the means of alanine aminotransferase and aspartate aminotransferase values. If there is no significant difference, this would indicate that either of these variables could be used as a proxy for liver damage in future analysis.
+
+## Describing the Data
+
+### Variables
+
+The variable `lbxsatsi` is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.
+
+The variable `lbxsassi` is the aspartate aminotransferase (AST; in U/L) level measured in the blood serum of the NHANES participants. The AST was also recorded in units/liter. This enzyme is present in the liver, heart, brain, kidneys, and muscles, but is classically used as a less-specific marker of liver damage.
+
+### Numerical Summaries/Visualizations
+
+#### Visualization
+
+First, the data was visualized to observe whether there appeared to be an association between ALT and AST. The dataset was filtered to the complete cases that had recorded ALT and AST values for this analysis.
+
+```{r}
+liver_damage_analA <- liver_damage %>%
+  filter(complete.cases(lbxsatsi, lbxsassi))
+
+liver_damage_analA %>%
+  ggplot(., aes(x = lbxsatsi, y = lbxsassi)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "red",
+              se = TRUE, formula = y ~ x) +
+  theme(aspect.ratio = 1) +
+  labs(caption = "Each subject had an ALT (in U/L) and AST (in U/L)")
+```
+
+Since ALT and AST are paired by participant, we can calculate an additional variable, the difference between ALT and AST values to make a visual comparison of the difference between the two values more apparent. The difference in ALT and AST was calculated as ALT minus AST.
+
+```{r}
+liver_damage_analA <- liver_damage_analA %>%
+  mutate(diff_ALT_AST = lbxsatsi - lbxsassi)
+```
+
+After calculating the difference in ALT and AST, I constructed a boxplot to visualize the distribution of the difference.
+
+```{r}
+ggplot(data = liver_damage_analA, aes(x = diff_ALT_AST, y = "")) +
+  geom_violin(fill = "dodgerblue") +
+  geom_boxplot(width = 0.3, outlier.size = 3) +
+  stat_summary(fun = "mean", geom = "point",
+               shape = 23, size = 4, fill = "blue") +
+  labs(x = "ALT - AST (difference in alanine and aspartate aminotransferase levels)",
+       y = "", title = "Distribution of Liver Enzyme Differences")
+```
+
+### Numerical Summaries
+
+While it appears that most of the differences in ALT and AST values lie close to zero, numerical summaries for each variable and the difference of ALT minus AST were calculated before the main analysis was completed.
+
+```{r}
+summ_anala <- as_tibble(bind_rows(
+  mosaic::favstats(~ lbxsatsi, data = liver_damage_analA),
+  mosaic::favstats(~ lbxsassi, data = liver_damage_analA),
+  mosaic::favstats(~ diff_ALT_AST, data = liver_damage_analA))) %>%
+  mutate(item = c("lbxsatsi", "lbxsassi", "diff_ALT_AST")) %>%
+  select(item, n, mean, sd, min, median, max)
+
+summ_anala %>% kable()
+```
+
+## Main Analysis
+
+Continue here 12/08/2024...
+
+## Conclusions
+
+# Analysis B: Comparing 2 Means with Independent Samples
+
+## The Question
+
+## Describing the Data
+
+## Main Analysis
+
+## Conclusions
+
+# Analysis C: Comparing 5 Means with Independent Samples
+
+## The Question
+
+## Describing the Data
+
+## Main Analysis
+
+## Conclusions
+
+# Analysis E: Analyzing a 2 x 5 Table
+
+## The Question
+
+## Describing the Data
+
+## Main Analysis
+
+## Conclusions
