@@ -1,5 +1,5 @@
 ---
-title: "CHANGE TITLE AFTER ANALYSIS!"
+title: "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history"
 author: "Landon Power"
 date: last-modified
 format: 
@@ -149,7 +149,7 @@ head(liver_damage)
 ## Codebook
 
 | Variable | Type | Description |
-|:--:|:--:|:--:|
+|:----------------------:|:----------------------:|:----------------------:|
 | **SEQN** | ID | Respondent sequence number |
 | **lbxsatsi** | Quant | Alanine aminotransferase (ALT; in U/L) |
 | **lbxsassi** | Quant | Aspartate aminotransferase (AST; in U/L) |
@@ -259,7 +259,7 @@ ggplot(data = liver_damage_analA, aes(x = diff_ALT_AST, y = "")) +
        y = "", title = "Distribution of Liver Enzyme Differences")
 ```
 
-### Numerical Summaries
+#### Numerical Summaries
 
 While it appears that most of the differences in ALT and AST values lie close to zero, numerical summaries for each variable and the difference of ALT minus AST were calculated before the main analysis was completed.
 
@@ -276,25 +276,135 @@ summ_anala %>% kable()
 
 ## Main Analysis
 
-Continue here 12/08/2024... Test to see if worked
+To test my hypothesis that the mean of ALT and AST would not significantly differ from each other, I chose to conduct a bootstrapping procedure for the comparison of means. I used a bootstrap procedure rather than a paired t-test since the distribution of the difference in ALT and AST does not appear to be normally distributed. As shown in the figure, "Distribution of Liver Enzyme Differences," above, there are a large number of values at the extreme ends of the distribution and the distribution may be slightly skewed to the right since the mean is slightly greater than the median. I set a random seed and used a confidence interval of 90%, with 2000 observations for the bootstrap procedure.
+
+```{r}
+set.seed(431)
+liver_damage_analA %$% 
+  Hmisc::smean.cl.boot(diff_ALT_AST, conf = 0.90, B = 2000) %>%
+  kable(digits = 2)
+```
 
 ## Conclusions
+
+Based on the result of the bootstrap procedure, it appears that the levels of alanine aminotransferase (ALT) are slightly higher than that of aspartate aminotransferase (AST) since the mean of the difference between ALT and AST is 0.63 and the 90% CI does not include zero.
+
+While my initial expectation was that these variables would closely approximate each other and that there would be no significant difference between their means, it does appear that the mean of ALT is slightly higher than that of AST. I think this may be due to the concept that I mentioned earlier that ALT is a more specific indicator of liver damage, and would be more likely to be elevated in a population, compared to AST. Further investigation with these two variables could look into whether there is a correlation between these liver enzymes and history of alcohol use in this NHANES population.
 
 # Analysis B: Comparing 2 Means with Independent Samples
 
 ## The Question
 
+After considering a proxy for liver damage in the variable alanine aminotransferase (ALT), I decided to compares the means of ALT in two independent samples, males and females, from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7853 NHANES participants with complete gender information.
+
+**Question:** Considering that ALT can be used as an indicator for liver damage and since males and females can be considered two independent sampling groups, does the mean ALT level differ between males and females in the participants within the NHANES dataset, and can this be used to draw conclusions about liver damage in the population?
+
+**Expectation:** As ALT is a characteristic marker of liver damage and it seems to be anecdotally true that men are more likely to have problems with alcohol use and consumption, I expect the mean ALT in males to be higher than that of females. If true, this result would indicate a higher frequency of liver damage in males compared to females and could be extrapolated to draw conclusions about alcohol usage in future analysis.
+
 ## Describing the Data
+
+### Variables
+
+The variable `lbxsatsi` is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.
+
+The variable `riagendr` is the binary variable (male or female) that records the sex of the NHANES participants.
+
+### Numerical Summaries/Visualizations
+
+#### Visualization
+
+The dataset was filtered to the complete cases that had recorded ALT and gender values for this analysis. I then visualized the distribution of ALT in both males and females using a boxplot with the mean (blue diamond) and median with quartiles (white box of the boxplot).
+
+```{r}
+liver_damage_analB <- liver_damage %>%
+  filter(complete.cases(lbxsatsi, riagendr))
+
+ggplot(liver_damage_analB, aes(x = riagendr, y = lbxsatsi)) +
+  geom_violin(aes(fill = riagendr)) +
+  geom_boxplot(width = 0.3, outlier.size = 2, notch = T) +
+  stat_summary(fun = "mean", geom = "point",
+               shape = 23, size = 4, fill = "blue") +
+  guides(fill = "none") +
+  scale_fill_viridis_d(alpha = 0.3) + 
+  coord_flip() +
+  labs(y = "Alanine aminotransferase (ALT; in U/L)",
+       x = "",
+       title = "Comparing ALT Levels by Sex")
+```
+
+#### Numerical Summaries
+
+While it appears that most of the ALT values are centered around 20, the distribution of ALT values in both males and females is strongly skewed right. Numerical summaries for ALT in males and females were calculated before the main analysis was completed.
+
+```{r}
+mosaic::favstats(lbxsatsi ~ riagendr, data = liver_damage_analB)
+```
 
 ## Main Analysis
 
+To test my hypothesis that the mean of ALT would be higher in males than females, I chose to conduct a bootstrapping procedure for the comparison of means of two independent samples. I used a bootstrap procedure rather than a two-sample t-test or Welch's t-test since the distribution of ALT in both males and females is not normally distributed. As shown in the figure, "Comparing ALT Levels by Sex," above, there is a long right-sided tail for ALT distributions in both males and females, indicating right-skewed distributions in both groups, which is further confirmed by the numerical summary above, since the mean ALT in both males and females is larger than the median ALT. I set a random seed and used a confidence interval of 90%, with 2000 observations for the bootstrap procedure.
+
+```{r}
+set.seed(431)
+liver_damage_analB %$% bootdif(y = lbxsatsi, g = riagendr, conf.level = 0.90,
+                  B.reps = 2000) %>%
+  kable(digits = 2)
+```
+
 ## Conclusions
+
+The results of the bootstrap procedure for comparison of two independent sample means indicates that the difference in means ($$ \mu_{female} - \mu_{male} $$), was -8.40. This result indicates that the ALT level in the male participants from the NHANES dataset was significantly higher than that of the ALT level in females, since the 90% CI of the difference in means (-9.08, -7.69) did not include 0. Therefore, I conclude that my expectation was confirmed and, within the NHANES data set, males have a significantly higher ALT level than females. This result may indicate that males in the NHANES data have a higher rate of liver damage. Future analysis could be conducted to determine whether this elevated ALT level is correlated with differences in alcohol use and alcohol history in males and females.
 
 # Analysis C: Comparing 5 Means with Independent Samples
 
 ## The Question
 
+Since alanine aminotransferase (ALT) was elevated in males compared to females, I also wanted to compare the means of ALT across different racial and ethnic groups including, Mexican American, Other Hispanic, Non-Hispanic White, Non-Hispanic Black, Other Race, Including Multi-Racial, from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7853 NHANES participants with Race/Hispanic origin information.
+
+**Question:** Considering that ALT can be used as an indicator for liver damage and since each of these different racial/ethnic groups can be considered independent samples, does the mean ALT level differ between participants with different racial/Hispanic origin in the participants within the NHANES dataset, and can this be used to draw conclusions about liver damage in the population?
+
+**Expectation:** ALT is a characteristic marker of liver damage, and there is good evidence from the data of higher levels of ALT in males compared to females; however, I would not expect there to be significantly different levels of ALT in one racial category over another.
+
 ## Describing the Data
+
+### Variables
+
+The variable `lbxsatsi` is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.
+
+The variable `ridreth1` is the 5-category variable (Mexican American, Other Hispanic, Non-Hispanic White, Non-Hispanic Black, Other Race, Including Multi-Racial) that records the Race/Hispanic origin of the NHANES participants.
+
+### Numerical Summaries/Visualizations
+
+#### Visualization
+
+The dataset was filtered to the complete cases that had recorded ALT and Race/Hispanic origin values for this analysis. I then visualized the distribution of ALT in the five different race categories using a boxplot with the mean (blue diamond) and median with quartiles (white box of the boxplot).
+
+```{r}
+liver_damage_analC <- liver_damage %>%
+  filter(complete.cases(lbxsatsi, ridreth1))
+
+ggplot(liver_damage_analC, aes(x = ridreth1, y = lbxsatsi)) +
+  geom_violin(aes(fill = ridreth1)) +
+  geom_boxplot(width = 0.3, outlier.size = 2, notch = T) +
+  stat_summary(fun = "mean", geom = "point",
+               shape = 23, size = 4, fill = "blue") +
+  guides(fill = "none") +
+  scale_fill_viridis_d(alpha = 0.3) + 
+  coord_flip() +
+  labs(y = "Alanine aminotransferase (ALT; in U/L)",
+       x = "",
+       title = "Comparing ALT Levels by Race/Hispanic Origin")
+```
+
+#### Numerical Summaries
+
+Continue here on 12/10/2024...
+
+While it appears that most of the ALT values are centered around 20, the distribution of ALT values in all Race/Hispanic origin groups is strongly skewed right. Numerical summaries for ALT in each group were calculated before the main analysis was completed.
+
+```{r}
+
+```
 
 ## Main Analysis
 

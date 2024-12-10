@@ -72,154 +72,154 @@
   {
     "objectID": "blog1/index.html",
     "href": "blog1/index.html",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "",
     "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(Hmisc)\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)\n\n\n\n\nI ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#demographic &lt;- haven::read_xpt(\"data/P_DEMO.xpt\")\n\n#saveRDS(demographic, \"data/P_DEMO.Rds\")\n\n# Simply read the tibble after data are saved\ndemographic &lt;- readRDS(\"data/P_DEMO.Rds\")\n\nI ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#biochem &lt;- haven::read_xpt(\"data/P_BIOPRO.xpt\")\n\n#saveRDS(biochem, \"data/P_BIOPRO.Rds\")\n\n# Simply read the tibble after data are saved\nbiochem &lt;- readRDS(\"data/P_BIOPRO.Rds\")\n\nFinally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#alcohol &lt;- haven::read_xpt(\"data/P_ALQ.xpt\")\n\n#saveRDS(alcohol, \"data/P_ALQ.Rds\")\n\n# Simply read the tibble after data are saved\nalcohol &lt;- readRDS(\"data/P_ALQ.Rds\")"
   },
   {
     "objectID": "blog1/index.html#setup",
     "href": "blog1/index.html#setup",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "",
     "text": "library(janitor)\nlibrary(knitr)\nlibrary(magrittr)\nlibrary(broom)\nlibrary(naniar)\nlibrary(patchwork)\nlibrary(modelsummary)\nlibrary(pwr)\nlibrary(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data\nlibrary(Hmisc)\nlibrary(tidyverse)\n\nsource(\"data/Love-boost.R\")\n\ntheme_set(theme_light())  # or use theme_set(theme_bw())\nknitr::opts_chunk$set(comment=NA)"
   },
   {
     "objectID": "blog1/index.html#data-ingest",
     "href": "blog1/index.html#data-ingest",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "",
     "text": "I ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#demographic &lt;- haven::read_xpt(\"data/P_DEMO.xpt\")\n\n#saveRDS(demographic, \"data/P_DEMO.Rds\")\n\n# Simply read the tibble after data are saved\ndemographic &lt;- readRDS(\"data/P_DEMO.Rds\")\n\nI ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#biochem &lt;- haven::read_xpt(\"data/P_BIOPRO.xpt\")\n\n#saveRDS(biochem, \"data/P_BIOPRO.Rds\")\n\n# Simply read the tibble after data are saved\nbiochem &lt;- readRDS(\"data/P_BIOPRO.Rds\")\n\nFinally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.\n\n# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport\n#alcohol &lt;- haven::read_xpt(\"data/P_ALQ.xpt\")\n\n#saveRDS(alcohol, \"data/P_ALQ.Rds\")\n\n# Simply read the tibble after data are saved\nalcohol &lt;- readRDS(\"data/P_ALQ.Rds\")"
   },
   {
     "objectID": "blog1/index.html#codebook",
     "href": "blog1/index.html#codebook",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "3.1 Codebook",
     "text": "3.1 Codebook\n\n\n\n\n\n\n\n\nVariable\nType\nDescription\n\n\n\n\nSEQN\nID\nRespondent sequence number\n\n\nlbxsatsi\nQuant\nAlanine aminotransferase (ALT; in U/L)\n\n\nlbxsassi\nQuant\nAspartate aminotransferase (AST; in U/L)\n\n\nriagendr\nBinary\nGender\n\n\nridreth1\n5-Cat\nRace/Hispanic origin (1 = Mexican American, 2 = Other Hispanic, 3 = Non-Hispanic White, 4 = Non-Hispanic Black, 5 = Other Race, Including Multi-Racial)\n\n\nalq151\nBinary\nPeriod of life where subject ever had more than 4/5 drinks every day? (1 = Yes, 2 = No, 7 = Refused, 9 = Don’t know)"
   },
   {
     "objectID": "blog1/index.html#analytic-tibble",
     "href": "blog1/index.html#analytic-tibble",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "3.2 Analytic Tibble",
     "text": "3.2 Analytic Tibble\nThe complete tibble and a summary of the variables that are missing values is shown below.\n\nliver_damage\n\n# A tibble: 7,853 × 8\n     seqn ridstatr ridageyr lbxsatsi lbxsassi riagendr ridreth1           alq151\n    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;              &lt;fct&gt; \n 1 109266        2       29       15       14 female   Other/Multi-Racial no    \n 2 109271        2       49        8       14 male     Non-Hispanic White yes   \n 3 109273        2       36       35       27 male     Non-Hispanic White no    \n 4 109274        2       68       19       20 male     Other/Multi-Racial no    \n 5 109282        2       76       17       19 male     Non-Hispanic White no    \n 6 109284        2       44       16       15 female   Mexican American   &lt;NA&gt;  \n 7 109286        2       33       10       13 female   Other/Multi-Racial &lt;NA&gt;  \n 8 109290        2       68       19       18 female   Non-Hispanic Black no    \n 9 109291        2       42       11       25 female   Other/Multi-Racial &lt;NA&gt;  \n10 109292        2       58       21       18 male     Other Hispanic     no    \n# ℹ 7,843 more rows\n\n\n\ngg_miss_var(liver_damage)\n\n\n\n\n\n\n\nmiss_var_summary(liver_damage)\n\n# A tibble: 8 × 3\n  variable n_miss pct_miss\n  &lt;chr&gt;     &lt;int&gt;    &lt;num&gt;\n1 alq151     1149    14.6 \n2 lbxsassi    637     8.11\n3 lbxsatsi    606     7.72\n4 seqn          0     0   \n5 ridstatr      0     0   \n6 ridageyr      0     0   \n7 riagendr      0     0   \n8 ridreth1      0     0"
   },
   {
     "objectID": "blog1/index.html#data-summary",
     "href": "blog1/index.html#data-summary",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "3.3 Data Summary",
     "text": "3.3 Data Summary\n\n3.3.1 Alanine aminotransferase (ALT; in U/L)\n\ndescribe(liver_damage$lbxsatsi)\n\nliver_damage$lbxsatsi : Alanine Aminotransferase (ALT) (U/L) \n       n  missing distinct     Info     Mean      Gmd      .05      .10 \n    7247      606      146    0.999    22.59     14.8        9       10 \n     .25      .50      .75      .90      .95 \n      13       18       26       39       51 \n\nlowest :   2   3   4   5   6, highest: 208 211 213 338 682\n\n\n\n\n3.3.2 Aspartate aminotransferase (AST; in U/L)\n\ndescribe(liver_damage$lbxsassi)\n\nliver_damage$lbxsassi : Aspartate Aminotransferase (AST) (U/L) \n       n  missing distinct     Info     Mean      Gmd      .05      .10 \n    7216      637      122    0.997    21.95    10.02    12.00    13.00 \n     .25      .50      .75      .90      .95 \n   16.00    19.00    24.00    31.00    38.25 \n\nlowest :   6   7   8   9  10, highest: 218 272 294 307 489\n\n\n\n\n3.3.3 Gender\n\ndescribe(liver_damage$riagendr)\n\nliver_damage$riagendr \n       n  missing distinct \n    7853        0        2 \n                        \nValue        male female\nFrequency    3794   4059\nProportion  0.483  0.517\n\n\n\n\n3.3.4 Race/Hispanic origin\n\ndescribe(liver_damage$ridreth1)\n\nliver_damage$ridreth1 \n       n  missing distinct \n    7853        0        5 \n                                                                   \nValue        Mexican American     Other Hispanic Non-Hispanic White\nFrequency                 945                847               2491\nProportion              0.120              0.108              0.317\n                                                \nValue      Non-Hispanic Black Other/Multi-Racial\nFrequency                2179               1391\nProportion              0.277              0.177\n\n\n\n\n3.3.5 Period of life where subject ever had more than 4/5 drinks every day?\n\ndescribe(liver_damage$alq151)\n\nliver_damage$alq151 \n       n  missing distinct \n    6704     1149        4 \n                                                      \nValue             yes         no    Refused Don't Know\nFrequency        1061       5633          1          9\nProportion      0.158      0.840      0.000      0.001"
   },
   {
     "objectID": "blog1/index.html#the-question",
     "href": "blog1/index.html#the-question",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "4.1 The Question",
     "text": "4.1 The Question\nTo find a good proxy for liver damage, I decided to compares the means of two quantitative variables from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7216 NHANES participants with complete AST values.\nQuestion: Since both elevated ALT and AST are indicators of liver damage and since these variables are collected on each of the participants and can be considered paired samples, do the means of these two enzymmatic markers of liver function closely approximate each other, such that they are not significantly different?\nExpectation: Both ALT and AST are functionally related enzymmatic markers, even though elevated ALT is more characteristic of liver damage. In this case, I expect there to be no significant difference between the means of alanine aminotransferase and aspartate aminotransferase values. If there is no significant difference, this would indicate that either of these variables could be used as a proxy for liver damage in future analysis."
   },
   {
     "objectID": "blog1/index.html#describing-the-data",
     "href": "blog1/index.html#describing-the-data",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "4.2 Describing the Data",
-    "text": "4.2 Describing the Data\n\n4.2.1 Variables\nThe variable lbxsatsi is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.\nThe variable lbxsassi is the aspartate aminotransferase (AST; in U/L) level measured in the blood serum of the NHANES participants. The AST was also recorded in units/liter. This enzyme is present in the liver, heart, brain, kidneys, and muscles, but is classically used as a less-specific marker of liver damage.\n\n\n4.2.2 Numerical Summaries/Visualizations\n\n4.2.2.1 Visualization\nFirst, the data was visualized to observe whether there appeared to be an association between ALT and AST. The dataset was filtered to the complete cases that had recorded ALT and AST values for this analysis.\n\nliver_damage_analA &lt;- liver_damage %&gt;%\n  filter(complete.cases(lbxsatsi, lbxsassi))\n\nliver_damage_analA %&gt;%\n  ggplot(., aes(x = lbxsatsi, y = lbxsassi)) +\n  geom_point() +\n  geom_smooth(method = \"lm\", col = \"red\",\n              se = TRUE, formula = y ~ x) +\n  theme(aspect.ratio = 1) +\n  labs(caption = \"Each subject had an ALT (in U/L) and AST (in U/L)\")\n\n\n\n\n\n\n\n\nSince ALT and AST are paired by participant, we can calculate an additional variable, the difference between ALT and AST values to make a visual comparison of the difference between the two values more apparent. The difference in ALT and AST was calculated as ALT minus AST.\n\nliver_damage_analA &lt;- liver_damage_analA %&gt;%\n  mutate(diff_ALT_AST = lbxsatsi - lbxsassi)\n\nAfter calculating the difference in ALT and AST, I constructed a boxplot to visualize the distribution of the difference.\n\nggplot(data = liver_damage_analA, aes(x = diff_ALT_AST, y = \"\")) +\n  geom_violin(fill = \"dodgerblue\") +\n  geom_boxplot(width = 0.3, outlier.size = 3) +\n  stat_summary(fun = \"mean\", geom = \"point\",\n               shape = 23, size = 4, fill = \"blue\") +\n  labs(x = \"ALT - AST (difference in alanine and aspartate aminotransferase levels)\",\n       y = \"\", title = \"Distribution of Liver Enzyme Differences\")\n\n\n\n\n\n\n\n\n\n\n\n4.2.3 Numerical Summaries\nWhile it appears that most of the differences in ALT and AST values lie close to zero, numerical summaries for each variable and the difference of ALT minus AST were calculated before the main analysis was completed.\n\nsumm_anala &lt;- as_tibble(bind_rows(\n  mosaic::favstats(~ lbxsatsi, data = liver_damage_analA),\n  mosaic::favstats(~ lbxsassi, data = liver_damage_analA),\n  mosaic::favstats(~ diff_ALT_AST, data = liver_damage_analA))) %&gt;%\n  mutate(item = c(\"lbxsatsi\", \"lbxsassi\", \"diff_ALT_AST\")) %&gt;%\n  select(item, n, mean, sd, min, median, max)\n\nRegistered S3 method overwritten by 'mosaic':\n  method                           from   \n  fortify.SpatialPolygonsDataFrame ggplot2\n\nsumm_anala %&gt;% kable()\n\n\n\n\nitem\nn\nmean\nsd\nmin\nmedian\nmax\n\n\n\n\nlbxsatsi\n7216\n22.578575\n18.94270\n2\n18\n682\n\n\nlbxsassi\n7216\n21.949279\n14.72411\n6\n19\n489\n\n\ndiff_ALT_AST\n7216\n0.629296\n10.98709\n-148\n-1\n193"
+    "text": "4.2 Describing the Data\n\n4.2.1 Variables\nThe variable lbxsatsi is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.\nThe variable lbxsassi is the aspartate aminotransferase (AST; in U/L) level measured in the blood serum of the NHANES participants. The AST was also recorded in units/liter. This enzyme is present in the liver, heart, brain, kidneys, and muscles, but is classically used as a less-specific marker of liver damage.\n\n\n4.2.2 Numerical Summaries/Visualizations\n\n4.2.2.1 Visualization\nFirst, the data was visualized to observe whether there appeared to be an association between ALT and AST. The dataset was filtered to the complete cases that had recorded ALT and AST values for this analysis.\n\nliver_damage_analA &lt;- liver_damage %&gt;%\n  filter(complete.cases(lbxsatsi, lbxsassi))\n\nliver_damage_analA %&gt;%\n  ggplot(., aes(x = lbxsatsi, y = lbxsassi)) +\n  geom_point() +\n  geom_smooth(method = \"lm\", col = \"red\",\n              se = TRUE, formula = y ~ x) +\n  theme(aspect.ratio = 1) +\n  labs(caption = \"Each subject had an ALT (in U/L) and AST (in U/L)\")\n\n\n\n\n\n\n\n\nSince ALT and AST are paired by participant, we can calculate an additional variable, the difference between ALT and AST values to make a visual comparison of the difference between the two values more apparent. The difference in ALT and AST was calculated as ALT minus AST.\n\nliver_damage_analA &lt;- liver_damage_analA %&gt;%\n  mutate(diff_ALT_AST = lbxsatsi - lbxsassi)\n\nAfter calculating the difference in ALT and AST, I constructed a boxplot to visualize the distribution of the difference.\n\nggplot(data = liver_damage_analA, aes(x = diff_ALT_AST, y = \"\")) +\n  geom_violin(fill = \"dodgerblue\") +\n  geom_boxplot(width = 0.3, outlier.size = 3) +\n  stat_summary(fun = \"mean\", geom = \"point\",\n               shape = 23, size = 4, fill = \"blue\") +\n  labs(x = \"ALT - AST (difference in alanine and aspartate aminotransferase levels)\",\n       y = \"\", title = \"Distribution of Liver Enzyme Differences\")\n\n\n\n\n\n\n\n\n\n\n4.2.2.2 Numerical Summaries\nWhile it appears that most of the differences in ALT and AST values lie close to zero, numerical summaries for each variable and the difference of ALT minus AST were calculated before the main analysis was completed.\n\nsumm_anala &lt;- as_tibble(bind_rows(\n  mosaic::favstats(~ lbxsatsi, data = liver_damage_analA),\n  mosaic::favstats(~ lbxsassi, data = liver_damage_analA),\n  mosaic::favstats(~ diff_ALT_AST, data = liver_damage_analA))) %&gt;%\n  mutate(item = c(\"lbxsatsi\", \"lbxsassi\", \"diff_ALT_AST\")) %&gt;%\n  select(item, n, mean, sd, min, median, max)\n\nRegistered S3 method overwritten by 'mosaic':\n  method                           from   \n  fortify.SpatialPolygonsDataFrame ggplot2\n\nsumm_anala %&gt;% kable()\n\n\n\n\nitem\nn\nmean\nsd\nmin\nmedian\nmax\n\n\n\n\nlbxsatsi\n7216\n22.578575\n18.94270\n2\n18\n682\n\n\nlbxsassi\n7216\n21.949279\n14.72411\n6\n19\n489\n\n\ndiff_ALT_AST\n7216\n0.629296\n10.98709\n-148\n-1\n193"
   },
   {
     "objectID": "blog1/index.html#main-analysis",
     "href": "blog1/index.html#main-analysis",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "4.3 Main Analysis",
-    "text": "4.3 Main Analysis\nContinue here 12/08/2024… Test to see if worked"
+    "text": "4.3 Main Analysis\nTo test my hypothesis that the mean of ALT and AST would not significantly differ from each other, I chose to conduct a bootstrapping procedure for the comparison of means. I used a bootstrap procedure rather than a paired t-test since the distribution of the difference in ALT and AST does not appear to be normally distributed. As shown in the figure, “Distribution of Liver Enzyme Differences,” above, there are a large number of values at the extreme ends of the distribution and the distribution may be slightly skewed to the right since the mean is slightly greater than the median. I set a random seed and used a confidence interval of 90%, with 2000 observations for the bootstrap procedure.\n\nset.seed(431)\nliver_damage_analA %$% \n  Hmisc::smean.cl.boot(diff_ALT_AST, conf = 0.90, B = 2000) %&gt;%\n  kable(digits = 2)\n\n\n\n\n\nx\n\n\n\n\nMean\n0.63\n\n\nLower\n0.42\n\n\nUpper\n0.85"
   },
   {
     "objectID": "blog1/index.html#conclusions",
     "href": "blog1/index.html#conclusions",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "4.4 Conclusions",
-    "text": "4.4 Conclusions"
+    "text": "4.4 Conclusions\nBased on the result of the bootstrap procedure, it appears that the levels of alanine aminotransferase (ALT) are slightly higher than that of aspartate aminotransferase (AST) since the mean of the difference between ALT and AST is 0.63 and the 90% CI does not include zero.\nWhile my initial expectation was that these variables would closely approximate each other and that there would be no significant difference between their means, it does appear that the mean of ALT is slightly higher than that of AST. I think this may be due to the concept that I mentioned earlier that ALT is a more specific indicator of liver damage, and would be more likely to be elevated in a population, compared to AST. Further investigation with these two variables could look into whether there is a correlation between these liver enzymes and history of alcohol use in this NHANES population."
   },
   {
     "objectID": "blog1/index.html#the-question-1",
     "href": "blog1/index.html#the-question-1",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "5.1 The Question",
-    "text": "5.1 The Question"
+    "text": "5.1 The Question\nAfter considering a proxy for liver damage in the variable alanine aminotransferase (ALT), I decided to compares the means of ALT in two independent samples, males and females, from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7853 NHANES participants with complete gender information.\nQuestion: Considering that ALT can be used as an indicator for liver damage and since males and females can be considered two independent sampling groups, does the mean ALT level differ between males and females in the participants within the NHANES dataset, and can this be used to draw conclusions about liver damage in the population?\nExpectation: As ALT is a characteristic marker of liver damage and it seems to be anecdotally true that men are more likely to have problems with alcohol use and consumption, I expect the mean ALT in males to be higher than that of females. If true, this result would indicate a higher frequency of liver damage in males compared to females and could be extrapolated to draw conclusions about alcohol usage in future analysis."
   },
   {
     "objectID": "blog1/index.html#describing-the-data-1",
     "href": "blog1/index.html#describing-the-data-1",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "5.2 Describing the Data",
-    "text": "5.2 Describing the Data"
+    "text": "5.2 Describing the Data\n\n5.2.1 Variables\nThe variable lbxsatsi is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.\nThe variable riagendr is the binary variable (male or female) that records the sex of the NHANES participants.\n\n\n5.2.2 Numerical Summaries/Visualizations\n\n5.2.2.1 Visualization\nThe dataset was filtered to the complete cases that had recorded ALT and gender values for this analysis. I then visualized the distribution of ALT in both males and females using a boxplot with the mean (blue diamond) and median with quartiles (white box of the boxplot).\n\nliver_damage_analB &lt;- liver_damage %&gt;%\n  filter(complete.cases(lbxsatsi, riagendr))\n\nggplot(liver_damage_analB, aes(x = riagendr, y = lbxsatsi)) +\n  geom_violin(aes(fill = riagendr)) +\n  geom_boxplot(width = 0.3, outlier.size = 2, notch = T) +\n  stat_summary(fun = \"mean\", geom = \"point\",\n               shape = 23, size = 4, fill = \"blue\") +\n  guides(fill = \"none\") +\n  scale_fill_viridis_d(alpha = 0.3) + \n  coord_flip() +\n  labs(y = \"Alanine aminotransferase (ALT; in U/L)\",\n       x = \"\",\n       title = \"Comparing ALT Levels by Sex\")\n\n\n\n\n\n\n\n\n\n\n5.2.2.2 Numerical Summaries\nWhile it appears that most of the ALT values are centered around 20, the distribution of ALT values in both males and females is strongly skewed right. Numerical summaries for ALT in males and females were calculated before the main analysis was completed.\n\nmosaic::favstats(lbxsatsi ~ riagendr, data = liver_damage_analB)\n\n  riagendr min   Q1 median Q3 max     mean       sd    n missing\n1     male   2 16.0     21 31 682 26.94158 22.60026 3492       0\n2   female   3 11.5     15 21 213 18.54274 13.50479 3755       0"
   },
   {
     "objectID": "blog1/index.html#main-analysis-1",
     "href": "blog1/index.html#main-analysis-1",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "5.3 Main Analysis",
-    "text": "5.3 Main Analysis"
+    "text": "5.3 Main Analysis\nTo test my hypothesis that the mean of ALT would be higher in males than females, I chose to conduct a bootstrapping procedure for the comparison of means of two independent samples. I used a bootstrap procedure rather than a two-sample t-test or Welch’s t-test since the distribution of ALT in both males and females is not normally distributed. As shown in the figure, “Comparing ALT Levels by Sex,” above, there is a long right-sided tail for ALT distributions in both males and females, indicating right-skewed distributions in both groups, which is further confirmed by the numerical summary above, since the mean ALT in both males and females is larger than the median ALT. I set a random seed and used a confidence interval of 90%, with 2000 observations for the bootstrap procedure.\n\nset.seed(431)\nliver_damage_analB %$% bootdif(y = lbxsatsi, g = riagendr, conf.level = 0.90,\n                  B.reps = 2000) %&gt;%\n  kable(digits = 2)\n\n\n\n\n\nx\n\n\n\n\nMean Difference\n-8.40\n\n\n0.05\n-9.08\n\n\n0.95\n-7.69"
   },
   {
     "objectID": "blog1/index.html#conclusions-1",
     "href": "blog1/index.html#conclusions-1",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "5.4 Conclusions",
-    "text": "5.4 Conclusions"
+    "text": "5.4 Conclusions\nThe results of the bootstrap procedure for comparison of two independent sample means indicates that the difference in means (\\[ \\mu_{female} - \\mu_{male} \\]), was -8.40. This result indicates that the ALT level in the male participants from the NHANES dataset was significantly higher than that of the ALT level in females, since the 90% CI of the difference in means (-9.08, -7.69) did not include 0. Therefore, I conclude that my expectation was confirmed and, within the NHANES data set, males have a significantly higher ALT level than females. This result may indicate that males in the NHANES data have a higher rate of liver damage. Future analysis could be conducted to determine whether this elevated ALT level is correlated with differences in alcohol use and alcohol history in males and females."
   },
   {
     "objectID": "blog1/index.html#the-question-2",
     "href": "blog1/index.html#the-question-2",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "6.1 The Question",
-    "text": "6.1 The Question"
+    "text": "6.1 The Question\nSince alanine aminotransferase (ALT) was elevated in males compared to females, I also wanted to compare the means of ALT across different racial and ethnic groups including, Mexican American, Other Hispanic, Non-Hispanic White, Non-Hispanic Black, Other Race, Including Multi-Racial, from the NHANES 2017-2020 dataset. There were 7247 NHANES participants with complete ALT values and 7853 NHANES participants with Race/Hispanic origin information.\nQuestion: Considering that ALT can be used as an indicator for liver damage and since each of these different racial/ethnic groups can be considered independent samples, does the mean ALT level differ between participants with different racial/Hispanic origin in the participants within the NHANES dataset, and can this be used to draw conclusions about liver damage in the population?\nExpectation: ALT is a characteristic marker of liver damage, and there is good evidence from the data of higher levels of ALT in males compared to females; however, I would not expect there to be significantly different levels of ALT in one racial category over another."
   },
   {
     "objectID": "blog1/index.html#describing-the-data-2",
     "href": "blog1/index.html#describing-the-data-2",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "6.2 Describing the Data",
-    "text": "6.2 Describing the Data"
+    "text": "6.2 Describing the Data\n\n6.2.1 Variables\nThe variable lbxsatsi is the alanine aminotransferase (ALT; in U/L) level measured in the blood serum of the NHANES participants. The ALT level was recorded in units/liter. This enzyme is specific to the liver and and elevated serum ALT is an indicator of liver damage.\nThe variable ridreth1 is the 5-category variable (Mexican American, Other Hispanic, Non-Hispanic White, Non-Hispanic Black, Other Race, Including Multi-Racial) that records the Race/Hispanic origin of the NHANES participants.\n\n\n6.2.2 Numerical Summaries/Visualizations\n\n6.2.2.1 Visualization\nThe dataset was filtered to the complete cases that had recorded ALT and Race/Hispanic origin values for this analysis. I then visualized the distribution of ALT in the five different race categories using a boxplot with the mean (blue diamond) and median with quartiles (white box of the boxplot).\n\nliver_damage_analC &lt;- liver_damage %&gt;%\n  filter(complete.cases(lbxsatsi, ridreth1))\n\nggplot(liver_damage_analC, aes(x = ridreth1, y = lbxsatsi)) +\n  geom_violin(aes(fill = ridreth1)) +\n  geom_boxplot(width = 0.3, outlier.size = 2, notch = T) +\n  stat_summary(fun = \"mean\", geom = \"point\",\n               shape = 23, size = 4, fill = \"blue\") +\n  guides(fill = \"none\") +\n  scale_fill_viridis_d(alpha = 0.3) + \n  coord_flip() +\n  labs(y = \"Alanine aminotransferase (ALT; in U/L)\",\n       x = \"\",\n       title = \"Comparing ALT Levels by Race/Hispanic Origin\")\n\n\n\n\n\n\n\n\n\n\n6.2.2.2 Numerical Summaries\nContinue here on 12/10/2024…\nWhile it appears that most of the ALT values are centered around 20, the distribution of ALT values in all Race/Hispanic origin groups is strongly skewed right. Numerical summaries for ALT in each group were calculated before the main analysis was completed."
   },
   {
     "objectID": "blog1/index.html#main-analysis-2",
     "href": "blog1/index.html#main-analysis-2",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "6.3 Main Analysis",
     "text": "6.3 Main Analysis"
   },
   {
     "objectID": "blog1/index.html#conclusions-2",
     "href": "blog1/index.html#conclusions-2",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "6.4 Conclusions",
     "text": "6.4 Conclusions"
   },
   {
     "objectID": "blog1/index.html#the-question-3",
     "href": "blog1/index.html#the-question-3",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "7.1 The Question",
     "text": "7.1 The Question"
   },
   {
     "objectID": "blog1/index.html#describing-the-data-3",
     "href": "blog1/index.html#describing-the-data-3",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "7.2 Describing the Data",
     "text": "7.2 Describing the Data"
   },
   {
     "objectID": "blog1/index.html#main-analysis-3",
     "href": "blog1/index.html#main-analysis-3",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "7.3 Main Analysis",
     "text": "7.3 Main Analysis"
   },
   {
     "objectID": "blog1/index.html#conclusions-3",
     "href": "blog1/index.html#conclusions-3",
-    "title": "CHANGE TITLE AFTER ANALYSIS!",
+    "title": "Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history",
     "section": "7.4 Conclusions",
     "text": "7.4 Conclusions"
   },
