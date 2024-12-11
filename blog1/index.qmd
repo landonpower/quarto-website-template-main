@@ -114,7 +114,7 @@ For my analysis, I then filtered to the proper variables I will analyze:
 
 -   Analysis E: J x K table of two categorical variables
 
-    -   J (2-5 levels): Ever had 4/5 or more drinks every day? (2 levels, Yes/No)
+    -   J (2-5 levels): Ever had 4/5 or more drinks every day? (4 levels, Yes/No/Refused/Don't Know)
 
     -   K (3-5 levels): Race/Hispanic origin (5 levels)
 
@@ -398,24 +398,105 @@ ggplot(liver_damage_analC, aes(x = ridreth1, y = lbxsatsi)) +
 
 #### Numerical Summaries
 
-Continue here on 12/10/2024...
-
 While it appears that most of the ALT values are centered around 20, the distribution of ALT values in all Race/Hispanic origin groups is strongly skewed right. Numerical summaries for ALT in each group were calculated before the main analysis was completed.
 
 ```{r}
-
+mosaic::favstats(lbxsatsi ~ ridreth1, data = liver_damage_analC)
 ```
 
 ## Main Analysis
 
+To test my hypothesis that there would be no significant difference in the mean of ALT among the different racial/Hispanic origin groups, I chose to conduct an analysis of variance with the Tukey HSD for pariwise comparisons. While the residuals among the different groups do not appear to be normally distributed, the ANOVA F test should still be relatively robust to the lack of normality. As shown in the figure, "Comparing ALT Levels by Race/Hispanic Origin," above, there is a long right-sided tail for ALT distributions in both males and females, indicating right-skewed distributions in all the groups, which is further confirmed by the numerical summary above, since the mean ALT in all groups is larger than the median ALT. I used a CI of 90% in the Tukey HSD pairwise comparison.
+
+```{r}
+model_one <- lm(lbxsatsi ~ ridreth1, data = liver_damage_analC)
+tukey_one <- tidy(TukeyHSD(aov(model_one), 
+                           ordered = TRUE, 
+                           conf.level = 0.90))
+tukey_one %>% rename(null = null.value) %>% kable(dig = 3)
+```
+
+The following plot shows the results of the Tukey HSD for pairwise comparisons and the estimated effect for each pairwise comparison. This graph facilitates an easier interpretation of the pairwise comparisons with the largest effects.
+
+```{r}
+ggplot(tukey_one, aes(x = reorder(contrast, -estimate), 
+                      y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) + 
+  geom_hline(yintercept = 0, col = "red", 
+             linetype = "dashed") +
+  geom_text(aes(label = round(estimate,2)), nudge_x = -0.2) +
+  labs(x = "Contrast between Race/Hispanic Origin Groups",
+       y = "Estimated Effect, with 90% Tukey HSD interval",
+       title = "Estimated Effects, with Tukey HSD 90% Confidence Intervals",
+       subtitle = "Comparing ALT by Race/Hispanic Origin Group, NHANES 2017-2020 data") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = 7))
+```
+
 ## Conclusions
+
+The Tukey HSD pairwise comparison demonstrated that there was a largest effects, which appeared to be significant, given the adjusted p-value of less than 0.05 at a 90% confidence interval for the pairwise comparisons between: Mexican American-Non-Hispanic Black, Other Hispanic-Non-Hispanic Black, Other/Multi-Racial-Non-Hispanic Black, Mexican American-Non-Hispanic White, Non-Hispanic White-Non-Hispanic Black, and Mexican-American-Other/Multi-Racial. The other effects were not significant. These results indicate that there are most likely differences in ALT levels between different racial/Hispanic origin groups, with the highest levels of ALT in the Mexican American and Other Hispanic groups. This finding will be important for future analysis and could be further explored to see whether there are correlations between higher ALT levels in these groups and patterns of more frequent alcohol consumption.
 
 # Analysis E: Analyzing a 2 x 5 Table
 
 ## The Question
 
+Based on the previous analysis, I then wanted to compare the alcohol consumption habits among the different Race/Hispanic Origin groups defined by NHANES. From the Tukey HSD pairwise comparisons, alanine aminotransferase (ALT) appeared to have the largest effect in comparisons made with the Mexican American and Other Hispanic groups when they were compared with other Racial/Hispanic origin groups. From the apparent elevation in ALT levels in these two groups, I then decided to explore whether there is an association between periods of high alcohol consumption and Race/Hispanic Origin in these groups in questionnaire data from the NHANES 2017-2020 dataset. There were 7853 NHANES participants with Race/Hispanic origin information and 6704 NHANES participants with answers to the question of whether there has ever been a period in their life where they have had 4/5 or more drinks every day.
+
+**Question:** Considering that ALT can be used as an indicator for liver damage and the elevated ALT levels in Mexican American and Other Hispanic groups from the previous analysis, is there a significant association between Race/Hispanic Origin and having a period of high alcohol consumption in the participants within the NHANES dataset?
+
+**Expectation:** Based on the results from Analysis C, I expect that there is an association between the two variables of reporting a period of heavy alcohol consumption and Race/Hispanic Origin.
+
 ## Describing the Data
+
+### Variables
+
+The variable `ridreth1` is the 5-category variable (Mexican American, Other Hispanic, Non-Hispanic White, Non-Hispanic Black, Other Race, Including Multi-Racial) that records the Race/Hispanic origin of the NHANES participants.
+
+The variable `alq151` is the binary variable that records periods of high alcohol consumption with the response to the question: "Period of life where subject ever had more than 4/5 drinks every day?" The responses of the NHANES participants were recorded, although a few answered "Don't Know" and one refused to answer.
+
+### Numerical Summaries/Visualizations
+
+The data set was filtered to the complete cases that had recorded Race/Hispanic origin and Period of High Alcohol Consumption values for this analysis. I excluded the responses that were "Don't Know" or "Refused" for the Period of High Alcohol Consumption variable. Thus the data set has a total of 6694 observations for participants that responded to the Period of High Alcohol Consumption question.
+
+```{r}
+liver_damage_analE <- liver_damage %>%
+  filter(complete.cases(ridreth1, alq151)) %>%
+  filter(alq151 == "yes" | alq151 == "no") %>%
+  droplevels(liver_damage$alq151)
+```
+
+#### Numerical Summaries
+
+Below, I show the tabulation of the 4 by 5 table to summarize the responses within each Racial/Hispanic Origin group.
+
+```{r}
+crosstab <- table(liver_damage_analE$ridreth1, liver_damage_analE$alq151)
+crosstab
+```
+
+#### Visualization
+
+I then visualized the cross-tabulation of the 4 by 5 table as a bar-plot in the five different race categories using a boxplot with the mean (blue diamond) and median with quartiles (white box of the boxplot).
+
+```{r}
+ggplot(liver_damage_analE, aes(x = ridreth1, fill = alq151)) + 
+  geom_bar(stat = "count", position = "dodge") + 
+  labs(x = "Race/Hispanic Origin", y = "Count", fill = "Period High Alcohol Consumption") +
+  theme_minimal() +
+  ggtitle("Count of Period of High Alcohol Consumption by Race/Hispanic Origin") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = 7)) 
+```
 
 ## Main Analysis
 
+To test my hypothesis that there would be higher rates of Period of High Alcohol Consumption in the Mexican American and Other Hispanic groups, I conducted a Chi-squared test to calculate the association between Race/Hispanic Origin group and Period of High Alcohol Consumption.
+
+```{r}
+chisq.test(crosstab)
+```
+
 ## Conclusions
+
+The results of the Chi-squared test above result in a p-value that is much less than 0.05. Since there are more than five observations in each cell, I conclude that the Chi-squared test is an appropriate statistic to assess the possible association between Race/Hispanic Origin and Period of High Alcohol Consumption. Given that the p-value is 1.5x10^-6^ and is much less than 0.05, I conclude that I can reject the null hypothesis, that there is no association between Race/Hispanic Origin and Period of High Alcohol Consumption. This test statistic indicates that there is a significant association between these two variables. The Chi-squared statistic is also quite large compared to the Chi-square value needed to achieve significant at p \< 0.05 with 4 degrees of freedom (X^2^ = 9.49), thus reinforcing our conclusion that there is a strong association between Race/Hispanic Origin and Period of High Alcohol Consumption. However, there would have to be further analysis to determine the nature of this association and define whether there are specific Race/Hispanic Origin groups that have higher rates of a Period of High Alcohol Consumption.
