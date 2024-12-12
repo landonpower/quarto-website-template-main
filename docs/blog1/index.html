@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Landon Power">
-<meta name="dcterms.date" content="2024-12-11">
+<meta name="dcterms.date" content="2024-12-12">
 
 <title>Enzymmatic indicators of liver damage based on sex, race/ethnicity, and alcohol use history – Landon Power</title>
 <style>
@@ -5029,6 +5029,7 @@ window.Quarto = {
   <li><a href="#main-analysis-3" id="toc-main-analysis-3" class="nav-link" data-scroll-target="#main-analysis-3"><span class="header-section-number">7.3</span> Main Analysis</a></li>
   <li><a href="#conclusions-3" id="toc-conclusions-3" class="nav-link" data-scroll-target="#conclusions-3"><span class="header-section-number">7.4</span> Conclusions</a></li>
   </ul></li>
+  <li><a href="#session-information" id="toc-session-information" class="nav-link" data-scroll-target="#session-information"><span class="header-section-number">8</span> Session Information</a></li>
   </ul>
 </nav>
     </div>
@@ -5054,7 +5055,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-12-11</p>
+      <p class="date">2024-12-12</p>
     </div>
   </div>
   
@@ -5933,9 +5934,74 @@ X-squared = 32.59, df = 4, p-value = 1.449e-06</code></pre>
 <section id="conclusions-3" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="conclusions-3"><span class="header-section-number">7.4</span> Conclusions</h2>
 <p>The results of the Chi-squared test above result in a p-value that is much less than 0.05. Since there are more than five observations in each cell, I conclude that the Chi-squared test is an appropriate statistic to assess the possible association between Race/Hispanic Origin and Period of High Alcohol Consumption. Given that the p-value is 1.5x10<sup>-6</sup> and is much less than 0.05, I conclude that I can reject the null hypothesis, that there is no association between Race/Hispanic Origin and Period of High Alcohol Consumption. This test statistic indicates that there is a significant association between these two variables. The Chi-squared statistic is also quite large compared to the Chi-square value needed to achieve significant at p &lt; 0.05 with 4 degrees of freedom (X<sup>2</sup> = 9.49), thus reinforcing our conclusion that there is a strong association between Race/Hispanic Origin and Period of High Alcohol Consumption. However, there would have to be further analysis to determine the nature of this association and define whether there are specific Race/Hispanic Origin groups that have higher rates of a Period of High Alcohol Consumption.</p>
-
-
 </section>
+</section>
+<section id="session-information" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Session Information</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>xfun<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.4.1 (2024-06-14)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sonoma 14.6.1
+
+Locale: en_US.UTF-8 / en_US.UTF-8 / en_US.UTF-8 / C / en_US.UTF-8 / en_US.UTF-8
+
+Package version:
+  askpass_1.2.0       backports_1.5.0     base64enc_0.1-3    
+  bayestestR_0.14.0   bit_4.0.5           bit64_4.0.5        
+  blob_1.2.4          broom_1.0.6         bslib_0.8.0        
+  cachem_1.1.0        callr_3.7.6         cellranger_1.1.0   
+  checkmate_2.3.2     cli_3.6.3           clipr_0.8.0        
+  cluster_2.1.6       colorspace_2.1-1    compiler_4.4.1     
+  conflicted_1.2.0    cpp11_0.5.0         crayon_1.5.3       
+  curl_6.0.1          data.table_1.16.0   datawizard_0.12.3  
+  DBI_1.2.3           dbplyr_2.5.0        digest_0.6.37      
+  dplyr_1.1.4         dtplyr_1.3.1        evaluate_0.24.0    
+  fansi_1.0.6         farver_2.1.2        fastmap_1.2.0      
+  fontawesome_0.5.2   forcats_1.0.0       foreign_0.8-87     
+  Formula_1.2-5       fs_1.6.4            gargle_1.5.2       
+  generics_0.1.3      ggformula_0.12.0    ggplot2_3.5.1      
+  ggridges_0.5.6      glue_1.7.0          googledrive_2.1.1  
+  googlesheets4_1.1.1 graphics_4.4.1      grDevices_4.4.1    
+  grid_4.4.1          gridExtra_2.3       gtable_0.3.5       
+  haven_2.5.4         highr_0.11          Hmisc_5.1-3        
+  hms_1.1.3           htmlTable_2.4.3     htmltools_0.5.8.1  
+  htmlwidgets_1.6.4   httr_1.4.7          ids_1.0.1          
+  insight_0.20.4      isoband_0.2.7       janitor_2.2.0      
+  jquerylib_0.1.4     jsonlite_1.8.8      knitr_1.48         
+  labeling_0.4.3      labelled_2.13.0     lattice_0.22-6     
+  lifecycle_1.0.4     lubridate_1.9.3     magrittr_2.0.3     
+  MASS_7.3-61         Matrix_1.7-0        memoise_2.0.1      
+  methods_4.4.1       mgcv_1.9-1          mime_0.12          
+  modelr_0.1.11       modelsummary_2.2.0  mosaic_1.9.1       
+  mosaicCore_0.9.4.0  mosaicData_0.20.4   munsell_0.5.1      
+  naniar_1.1.0        nlme_3.1-166        nnet_7.3-19        
+  norm_1.0.11.1       openssl_2.2.1       parameters_0.22.2  
+  patchwork_1.2.0     performance_0.12.3  pillar_1.9.0       
+  pkgconfig_2.0.3     plyr_1.8.9          prettyunits_1.2.0  
+  processx_3.8.4      progress_1.2.3      ps_1.7.7           
+  purrr_1.0.2         pwr_1.3-0           R6_2.5.1           
+  ragg_1.3.2          rappdirs_0.3.3      RColorBrewer_1.1.3 
+  Rcpp_1.0.13         readr_2.1.5         readxl_1.4.3       
+  rematch_2.0.0       rematch2_2.1.2      reprex_2.1.1       
+  rlang_1.1.4         rmarkdown_2.28      rpart_4.1.23       
+  rstudioapi_0.16.0   rvest_1.0.4         sass_0.4.9         
+  scales_1.3.0        selectr_0.4.2       snakecase_0.11.1   
+  splines_4.4.1       stats_4.4.1         stringi_1.8.4      
+  stringr_1.5.1       sys_3.4.2           systemfonts_1.1.0  
+  tables_0.9.31       textshaping_0.4.0   tibble_3.2.1       
+  tidyr_1.3.1         tidyselect_1.2.1    tidyverse_2.0.0    
+  timechange_0.3.0    tinytable_0.4.0     tinytex_0.52       
+  tools_4.4.1         tzdb_0.4.0          UpSetR_1.4.0       
+  utf8_1.2.4          utils_4.4.1         uuid_1.2.1         
+  vctrs_0.6.5         viridis_0.6.5       viridisLite_0.4.2  
+  visdat_0.6.0        vroom_1.6.5         withr_3.0.1        
+  xfun_0.47           xml2_1.3.6          yaml_2.3.10        </code></pre>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

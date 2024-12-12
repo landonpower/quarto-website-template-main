@@ -500,3 +500,9 @@ chisq.test(crosstab)
 ## Conclusions
 
 The results of the Chi-squared test above result in a p-value that is much less than 0.05. Since there are more than five observations in each cell, I conclude that the Chi-squared test is an appropriate statistic to assess the possible association between Race/Hispanic Origin and Period of High Alcohol Consumption. Given that the p-value is 1.5x10^-6^ and is much less than 0.05, I conclude that I can reject the null hypothesis, that there is no association between Race/Hispanic Origin and Period of High Alcohol Consumption. This test statistic indicates that there is a significant association between these two variables. The Chi-squared statistic is also quite large compared to the Chi-square value needed to achieve significant at p \< 0.05 with 4 degrees of freedom (X^2^ = 9.49), thus reinforcing our conclusion that there is a strong association between Race/Hispanic Origin and Period of High Alcohol Consumption. However, there would have to be further analysis to determine the nature of this association and define whether there are specific Race/Hispanic Origin groups that have higher rates of a Period of High Alcohol Consumption.
+
+# Session Information
+
+```{r}
+xfun::session_info()
+```
