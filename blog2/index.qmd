@@ -1,25 +1,678 @@
 ---
-title: "Previous Research"
+title: "Models for prediction of enzymmatic indicators of liver damage with various biologic, demographic, and psychosocial predictors"
+author: "Landon Power"
+date: last-modified
+format: 
+  html:
+    editor: visual
+    toc: true
+    toc_float: true
+    number-sections: true
+    embed-resources: true
+    date-format: iso
+    theme: paper
 ---
 
-## Cognitive Impacts of Sickle Cell Disease (SCD)
+# Setup and Data Ingest
 
-<img src="childrens_stl_banner.png" style="height: 100%; width: 100%; object-fit: contain" onclick="window.open('https://profiles.wustl.edu/en/persons/melanie-fields', 'blank');"/>
+## Setup
 
-In my research with Dr. Fields, I explored the effect of SCD on the structural and functional connectivity of the brain in pediatric patients receiving care at St. Louis Children's Hospital. Some of the notable findings from my research with the Fields lab were that we observed an acute reversal in cognitive deficits and decreased functional connectivity in the fronto-parietal network after a single RBC transfusion. I also explored other MR biomarkers of cerebral metabolic stress, including oxygen extraction fraction (OEF) and its relationship to structural and functional connectivity in children with SCD. Some of the projects that I worked on while with the Fields lab were: 
+```{r, message = FALSE, warning = FALSE}
+library(janitor)
+library(knitr)
+library(magrittr)
+library(broom)
+library(naniar)
+library(patchwork)
+library(modelsummary)
+library(pwr)
+library(haven) # Package to ingest SAS transport files for 2017-2020 Pre-pandemic NHANES data
+library(forcats) # Package for rearranging categorical variables
+library(car) # For Box-Cox plot and transformations
+library(equatiomatic) # For linear model equation extraction
+library(Hmisc)
+library(tidyverse)
 
-### Peer Reviewed Articles:
+source("data/Love-boost.R")
 
-- <a href="https://onlinelibrary.wiley.com/doi/10.1002/pbc.29717" target="_blank">GRAPES: Trivia game increases sickle cell disease knowledge in patients and providers and mitigates healthcare biases</a>
+theme_set(theme_light())  # or use theme_set(theme_bw())
+knitr::opts_chunk$set(comment=NA)
+```
 
-- <a href="https://www.neurology.org/doi/10.1212/WNL.0000000000209429" target="_blank">Reversibility of Cognitive Deficits and Functional Connectivity with Transfusion in Children with SCD</a>
+## Data Ingest
 
-- <a href="https://onlinelibrary.wiley.com/doi/10.1111/bjh.19642" target="_blank">Cognitive Outcomes of Children and Adults with SCA</a>
+For this project, I will be using a similar data set to what I used in Study 1, but will be expanding the data set to include other possible predictors of liver enzyme outcomes.
 
-::: {layout-ncol=2}
+I ingested the demographic raw data from the NHANES 2017-2020 Pre-Pandemic Demographic data.
 
-![](ash_2022.jpeg)
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#demographic <- haven::read_xpt("data/P_DEMO.xpt")
 
-![](wustl_2024.jpeg)
+#saveRDS(demographic, "data/P_DEMO.Rds")
 
-:::
+# Simply read the tibble after data are saved
+demographic <- readRDS("data/P_DEMO.Rds")
+```
+
+I ingested the standard biochemistry panel raw data from the NHANES 2017-2020 Pre-Pandemic Laboratory data.
+
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#biochem <- haven::read_xpt("data/P_BIOPRO.xpt")
+
+#saveRDS(biochem, "data/P_BIOPRO.Rds")
+
+# Simply read the tibble after data are saved
+biochem <- readRDS("data/P_BIOPRO.Rds")
+```
+
+Finally, I ingested the Alcohol Use raw data from the NHANES 2017-2020 Pre-Pandemic Questionnaire data.
+
+```{r}
+# Initially save the data from the NHANES Pre-pandemic 2017-2020 SAS transport
+#alcohol <- haven::read_xpt("data/P_ALQ.xpt")
+
+#saveRDS(alcohol, "data/P_ALQ.Rds")
+
+# Simply read the tibble after data are saved
+alcohol <- readRDS("data/P_ALQ.Rds")
+```
+
+# Cleaning the Data
+
+## Cleaning
+
+I then merged the NHANES files before cleaning and selecting my variables.
+
+```{r}
+full_uncleaned1 <- left_join(demographic, biochem, by = "SEQN")
+```
+
+```{r}
+full_uncleaned2 <- left_join(full_uncleaned1, alcohol, by = "SEQN")
+```
+
+Then I cleaned the variables and selected only the variables I will use in analysis. I first cleaned the names of all the variables in the `full_uncleaned2` dataset.
+
+```{r}
+full <- full_uncleaned2 %>%
+  clean_names() %>%
+  mutate(across(where(is_character), as_factor))
+```
+
+I then selected the variables I will analyze and refined the observations to include only subjects who:
+
+-   had a `ridstatr` value of 2, meaning they were both interviewed and examined (N = 14,300)
+
+-   had a `ridageyr` between 21 and 79 years old (N = 7,853)
+
+For my analysis, I then filtered to the proper variables I will include in my analytic tibble:
+
+-   seqn, ridstatr
+
+-   outcome variable: lbxsatsi
+
+-   key predictor: alq121, which I recoded to to be a categorical variable with 6 categories
+
+    -   I excluded the participants that responded as "Refused" or "Don't Know" since this will be the key predictor and also filtered to the complete cases for this predictor.
+
+-   Age: ridageyr
+
+-   Sex: I recoded the `riagendr` variable to sex.
+
+-   Race/Ethnicity: ridreth3
+
+-   Education status: dmdeduce2, which I recoded to be a 4-level categorical variable
+
+```{r}
+liver_damage <- full %>%
+  filter(ridstatr == "2") %>%
+  filter(between(ridageyr, 21, 79)) %>%
+  select(seqn, ridstatr, lbxsatsi, alq121, ridageyr, 
+         riagendr, ridreth3, dmdeduc2) %>%
+  mutate(alq121 = fct_recode(factor(alq121), 
+                            "Never" = "0", 
+                            "Nearly Every Day" = "1",
+                            "Nearly Every Day" = "2",
+                            "2-4 times/week" = "3",
+                            "2-4 times/week" = "4",
+                            "2-4 times/month" = "5",
+                            "2-4 times/month" = "6",
+                            "7-12 times/year" = "7",
+                            "7-12 times/year" = "8",
+                            "1-6 times/year" = "9",
+                            "1-6 times/year" = "10")) %>%
+  mutate(sex = fct_recode(factor(riagendr), 
+                            "male" = "1", 
+                            "female" = "2")) %>%
+  mutate(ridreth3 = fct_recode(factor(ridreth3), 
+                            "Hispanic/LatinX" = "1", 
+                            "Hispanic/LatinX" = "2",
+                            "Non-Hispanic White" = "3",
+                            "Non-Hispanic Black" = "4",
+                            "Non-Hispanic Asian" = "6",
+                            "Other Race/Multiracial" = "7")) %>%
+  mutate(dmdeduc2 = fct_recode(factor(dmdeduc2),
+                                "Less than HS" = "1",
+                                "Less than HS" = "2",
+                                "HS Grad" = "3",
+                                "Some College" = "4",
+                                "College Grad" = "5"))
+```
+
+```{r}
+liver_damage <- liver_damage %>%
+  select(seqn, ridstatr, lbxsatsi, alq121, ridageyr, 
+         sex, ridreth3, dmdeduc2) %>%
+  filter(alq121 != "77") %>%
+  filter(alq121 != "99") %>%
+  droplevels(liver_damage$alq121) %>%
+  filter(complete.cases(lbxsatsi, alq121))
+
+head(liver_damage)
+```
+
+## Imputation
+
+After filtering the outcome and key predictor to complete cases, I then determined whether there were missing values in the other variables.
+
+```{r}
+gg_miss_var(liver_damage)
+```
+
+After exclusion of any missing values for alanine aminotransferase levels (ALT, the outcome variable) and alcohol consumption (alq121, the key predictor), there were no missing values in any of the other variables, so an imputation process was not necessary.
+
+# Codebook and Data Description
+
+| Variable | Type | Description |
+|:--:|:--:|:--:|
+| SEQN | ID | Respondent sequence number |
+| ridstatr | ID | Interview/Examination status, all completed follow up |
+| **Outcome:** lbxsatsi | Quant | Alanine aminotransferase (ALT; in U/L) |
+| **Key Predictor:** alq151 | 6-Cat | Past 12 mo how often drink alcoholic bev |
+| ridageyr | Quant | Age |
+| sex | Binary | Sex, male or female |
+| ridreth3 | 5-Cat | Race/Ethnicity |
+| dmdeduc2 | 4-Cat | Education level for adults 20+ |
+
+## Analytic Tibble
+
+The complete tibble and a summary of the variables that are missing values is shown below.
+
+```{r}
+liver_damage
+```
+
+```{r}
+gg_miss_var(liver_damage)
+
+miss_var_summary(liver_damage)
+```
+
+## Data Summary
+
+### Outcome: Alanine aminotransferase (ALT; in U/L)
+
+```{r}
+describe(liver_damage$lbxsatsi)
+```
+
+Based on this numerical summary of the data, it appears that there is one outlier that has a ALT level that is double that of all the other subjects. For the integrity of the data analysis, this observation will be removed. Therefore, there will only be 6253 subjects for analysis.
+
+```{r}
+liver_damage <- liver_damage %>%
+  filter(lbxsatsi < 400)
+```
+
+### Key Predictor: Alcohol consumption
+
+```{r}
+describe(liver_damage$alq121)
+```
+
+### Age (in years)
+
+```{r}
+describe(liver_damage$ridageyr)
+```
+
+### Sex (male or female)
+
+```{r}
+describe(liver_damage$sex)
+```
+
+### Race/Ethnicity
+
+```{r}
+describe(liver_damage$ridreth3)
+```
+
+### Education level
+
+```{r}
+describe(liver_damage$dmdeduc2)
+```
+
+# Research Question
+
+From my previous analysis in Study 1, I determined that alcohol consumption may be a variable of interest that may be associated with alanine aminotransferase (ALT) levels. In this analysis, I wanted to determine whether or not ALT levels can be predicted by another measure of alcohol consumption, the frequency of drinking over the past year. To explore this relationship, I will analyze multiple variables from the NHANES 2017-2020 dataset. There were 6254 NHANES participants with both complete ALT values and alcohol consumption data.
+
+**Question:** As elevated ALT is a well-known indicator of liver damage, and my previous study showed that ALT may be associated with variables like alcohol consumption in the NHANES data set, can the frequency of alcohol consumption over the past year be used as an appropriate model for ALT outcomes in the 6254 participants from the NHANES data set?
+
+**Expectation:** I expect that alcohol consumption will be a good model for ALT outcomes, however, I do think that other variables, such as age and sex may account for increased ALT in certain subsets of the NHANES participants. Therefore, I think that frequency of alcohol consumption alone will model ALT outcomes, but a multivariate model that includes other cofactors may be a more appropriate model for ALT values.
+
+# Partitioning the Data
+
+To construct models of the data, I first split the data set into two different subsets, including a training and test sample. The training sample includes 70% of the data and the test sample includes 30% of the data.
+
+```{r}
+set.seed(2024)
+
+training_data <- liver_damage |> slice_sample(prop = 0.70)
+
+test_data <- 
+    anti_join(liver_damage, training_data, by = "seqn")
+
+nrow(training_data); nrow(test_data)
+```
+
+After partitioning, there were 4377 observations in the training data set and 1877 observations in the test data set. This adds up to the total of 6254 observations that were in the initial, un-partitioned data set.
+
+# Transformation and Outcome
+
+## Visualization of Training Data
+
+In order to determine the skew of the data and whether a transformation is necessary, I constructed three plots to visualize the training data and compare it to a normal distribution. Based on the strong right-handed skew of the outcome variable, ALT levels, I will consider a transformation of the data using a Box-Cox plot.
+
+```{r}
+p1 <- ggplot(training_data, aes(x = lbxsatsi)) +
+    geom_histogram(bins = 12, col = "white", fill = "dodgerblue")
+
+p2 <- ggplot(training_data, aes(x = lbxsatsi, y = "")) +
+    geom_violin() + 
+    geom_boxplot(fill = "dodgerblue", width = 0.3) +
+    labs(y = "")
+
+p3 <- ggplot(training_data, aes(sample = lbxsatsi)) +
+    geom_qq(col = "dodgerblue") + geom_qq_line() + 
+    labs(y = "Observed ALT (in U/L)", x = "Normal (0,1) expectation")
+
+(p1 / p2 + plot_layout(heights = c(2,1))) | p3 
+```
+
+## Transformation
+
+To determine which transformation I should use, I constructed a Box-Cox plot. To construct the Box-Cox, I first had to build a linear model with the training data. I built the linear model using only the key predictor variable.
+
+```{r}
+model0 <- lm(lbxsatsi ~ alq121, data = training_data)
+
+boxCox(model0)
+```
+
+After determining that a transformation was necessary with the initial visualization, I calculated a Power Transformation summary on the training set data for the initial linear model.
+
+```{r}
+summary(powerTransform(model0))
+```
+
+Based on the power transformation summary, it appears that I need to transform the ALT data by taking the inverse and square rooting the ALT values. This transformation makes sense because there is a very long right-handed tail in the data set with high values that are multiple orders of magnitude greater than the smaller values. The inverse square root power transformation also helps to reduce the variance and decreases the impact of extreme values on the variable distribution.
+
+```{r}
+training_data <- training_data %>%
+  mutate(sqrinv_alt = (1/(sqrt(lbxsatsi))))
+```
+
+I then re-visualized the training data using the transformed ALT values.
+
+```{r}
+p1 <- ggplot(training_data, aes(x = sqrinv_alt)) +
+    geom_histogram(bins = 12, col = "white", fill = "salmon2")
+
+p2 <- ggplot(training_data, aes(x = sqrinv_alt, y = "")) +
+    geom_violin() + 
+    geom_boxplot(fill = "salmon2", width = 0.3) +
+    labs(y = "")
+
+p3 <- ggplot(training_data, aes(sample = sqrinv_alt)) +
+    geom_qq(col = "salmon2") + geom_qq_line() + 
+    labs(y = "Observed sqrinv(ALT) (ALT in U/L)", x = "Normal (0,1) expectation")
+
+(p1 / p2 + plot_layout(heights = c(2,1))) | p3 
+```
+
+The inverse square root transformation greatly improved the distribution of the data and made it conform much more closely to the normality assumptions. However, this transformation would be very difficult to interpret when applying it to the model. Instead of using the recommended inverse square root transformation by the Box-Cox plot, I decided to use an inverse transformation to help control the right-skewness of the data and decrease the impact of the very large ALT values. This inversely transformed data will be what I use for linear modeling.
+
+```{r}
+training_data <- training_data %>%
+  mutate(inv_alt = (1/(lbxsatsi)))
+```
+
+After re-calculating the transformation, I visualized the inverse transformation fo the ALT data.
+
+```{r}
+p1 <- ggplot(training_data, aes(x = inv_alt)) +
+    geom_histogram(bins = 12, col = "white", fill = "seagreen3")
+
+p2 <- ggplot(training_data, aes(x = inv_alt, y = "")) +
+    geom_violin() + 
+    geom_boxplot(fill = "seagreen3", width = 0.3) +
+    labs(y = "")
+
+p3 <- ggplot(training_data, aes(sample = inv_alt)) +
+    geom_qq(col = "seagreen3") + geom_qq_line() + 
+    labs(y = "Observed 1/(ALT) (ALT in U/L)", x = "Normal (0,1) expectation")
+
+(p1 / p2 + plot_layout(heights = c(2,1))) | p3 
+```
+
+# The Big Model
+
+## Linear model for all candidate predictors
+
+I constructed the first linear model with all the possible predictors, including the key predictor, frequency of alcohol consumption, and all the secondary predictors: age, sex, race/ethnicity, and education level.
+
+```{r}
+model1 <- lm(inv_alt ~ alq121 + ridageyr + sex + ridreth3 + dmdeduc2, 
+             data = training_data)
+```
+
+## Model equation
+
+I then summarized the model equation for the overall model with all five predictors from the model summary.
+
+```{r}
+extract_eq(model1, use_coefs = TRUE, coef_digits = 3)
+```
+
+## Coefficients Tidy Summary
+
+After summarizing the equation for the large linear model, I created a tidy summary of the model coefficients.
+
+```{r}
+tidy(model1, conf.int = TRUE, conf.level = 0.90) %>%
+  select(term, estimate, std.error, conf.low, conf.high) %>%
+  knitr::kable(digits = 3)
+```
+
+From the summary of the coefficients, it appears that multiple of the variables demonstrate 90% confidence intervals that do not include 0 and therefore may be significantly associated with the trends in 1/ALT outcomes.
+
+# Small Model
+
+## Linear model for all candidate predictors
+
+Now, I have constructed the smaller model with only the naive key predictor, frequency of alcohol consumption, and have eliminated all the secondary predictors: age, sex, race/ethnicity, and education level.
+
+```{r}
+model2 <- lm(inv_alt ~ alq121, 
+             data = training_data)
+```
+
+## Model equation
+
+I then summarized the model equation for the smaller model with all five predictors from the model summary.
+
+```{r}
+extract_eq(model2, use_coefs = TRUE, coef_digits = 3)
+```
+
+## Coefficients Tidy Summary
+
+After summarizing the equation for the smaller linear model, I created a tidy summary of the model coefficients.
+
+```{r}
+tidy(model2, conf.int = TRUE, conf.level = 0.90) %>%
+  select(term, estimate, std.error, conf.low, conf.high) %>%
+  knitr::kable(digits = 3)
+```
+
+From the summary of the coefficients, it appears that all of the categories of the alcohol consumption frequency variable, except for participants who drank only 1 to 6 times a year, demonstrate 90% confidence intervals that do not include 0 and therefore may be significantly associated with the trends in 1/ALT outcomes.
+
+# In-Sample Comparison
+
+## Quality of Fit
+
+In this section, I extract the R-squared, adjusted R-squared, AIC, and BIC values to assess the fit of each of the two models.
+
+```{r}
+g1 <- glance(model1) %>% mutate(model = "Large Model (5 predictors)")  
+g2 <- glance(model2) %>% mutate(model = "Small Model (Key predictor") 
+comp <- bind_rows(g1, g2) 
+
+comp %>% select(model, r.squared, adj.r.squared, AIC, BIC)
+```
+
+## Posterior Predictive Checks
+
+For posterior predictive checks, I first constructed an ideal model with the same number of predictors and observations as the large model.
+
+```{r}
+set.seed(2024)
+
+x1 <- rnorm(6253, 20, 5)
+x2 <- rnorm(6253, 20, 12)
+x3 <- rnorm(6253, 20, 10)
+x4 <- rnorm(6253, 20, 15)
+x5 <- rnorm(6253, 20, 13)
+er <- rnorm(6253, 0, 1)
+y <- .3*x1 - .2*x2 + .4*x3 + er
+
+sim0 <- tibble(y, x1, x2, x3, x4, x5)
+
+simmod0 <- lm(y ~ x1 + x2 + x3 + x4 + x5, data = sim0)
+
+summary(simmod0) # appears on next slide
+```
+
+Tidy summary of the large model:
+
+```{r}
+tidy(model1, conf.int = TRUE, conf.level = 0.90) %>%
+  select(term, estimate, std.error, conf.low, conf.high) %>%
+  knitr::kable(digits = 3)
+```
+
+Simply by visually inspecting the coefficients of the ideal model and comparing them to the large and small model, it appears that the coefficients for x4 and x5 are on similar orders of magnitude to those of the large and small model for inverse ALT outcomes, but the variables, x1, x2, and x3 that predict the behavior of y well all have much larger coefficients.
+
+## Assessing Assumptions
+
+To assess the assumptions of linearity, constant variance, and normality, I constructed residual plots of the ideal model as well as the large and small model.
+
+### Residual plots for ideal model
+
+```{r}
+par(mfrow=c(2,2))
+plot(simmod0)
+```
+
+### Residual plots for large model
+
+```{r}
+par(mfrow=c(2,2))
+plot(model1)
+```
+
+For the large model, based on the results of the residuals plot in the top left, it appears that the large model parameters do not meet the assumptions of constant variance, since there appears to be a slight widening shape in the residuals plot. The assumptions of normality and linearity are also not met because of the large upward curve at larger values on the Q-Q plot.
+
+### Residual plots for small model
+
+```{r}
+par(mfrow=c(2,2))
+plot(model2)
+```
+
+For the small model, based on the results of the residuals plot in the top left, it appears that the small model parameters may meet the assumptions of constant variance, since there appears to be a relatively constant range in the residuals plot. The assumptions of normality and linearity are not met because of the large upward curve at larger values on the Q-Q plot.
+
+## Comparing the Models
+
+```{r}
+g1 <- glance(model1) %>% mutate(model = "Large Model (5 predictors)")  
+g2 <- glance(model2) %>% mutate(model = "Small Model (Key predictor") 
+comp <- bind_rows(g1, g2) 
+
+comp %>% select(model, r.squared, adj.r.squared, AIC, BIC)
+```
+
+Based on the statistical summaries and the residual plots of the data, I think that the most appropriate model would be the larger model with all 5-predictors, since it has a larger R-squared and adjusted R-squared value than the smaller model. However, there are large drawbacks with the larger model as it does not meet the normality, linearity, and constant variance assumptions as shown in the above residual plots.
+
+# Model Validation
+
+## Calculating Prediction Errors
+
+### Large Model (5 predictors)
+
+I applied the large model (model1) to the test data and did back-transformation to obtain the results of the predictions.
+
+```{r}
+pred_invalt_1 <- predict(model1, newdata = test_data)
+
+# Back-transform predictions by applying the exponential function
+pred_alt_1 <- 1/(pred_invalt_1)
+
+# Compare the predicted and actual mpg values
+result_5_pred <- data.frame(
+  Actual = test_data$lbxsatsi,
+  Predicted_Inverse_Alt = pred_invalt_1,
+  Predicted_Original_Alt = pred_alt_1
+)
+
+```
+
+### Small Model (Key predictor)
+
+I applied the small model (model2) to the test data and did back-transformation to obtain the results of the predictions.
+
+```{r}
+pred_invalt_2 <- predict(model2, newdata = test_data)
+
+# Back-transform predictions by applying the exponential function
+pred_alt_2 <- 1/(pred_invalt_2)
+
+# Compare the predicted and actual mpg values
+result_key_pred <- data.frame(
+  Actual = test_data$lbxsatsi,
+  Predicted_Inverse_Alt = pred_invalt_2,
+  Predicted_Original_Alt = pred_alt_2
+)
+```
+
+## Visualizing the Predictions
+
+After back-transformation, I constructed two plots to visualize the predictions of the two models with the test data to the actual outcome variable for ALT values. The range of the predicted values is on the X-axis and the range of the observed values is on the Y-axis.
+
+```{r}
+
+p4 <- ggplot(result_5_pred, aes(x = Predicted_Original_Alt, y = Actual)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  labs(
+    title = "Actual vs Predicted ALT (in U/L) for 5-predictors",
+    subtitle = "Predictors: Alcohol consumption, age, sex, race/ethnicity, and education",
+    x = "Predicted ALT (in U/L)",
+    y = "Actual ALT (in U/L)"
+  )
+
+p5 <- ggplot(result_key_pred, aes(x = Predicted_Original_Alt, y = Actual)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  labs(
+    title = "Actual vs Predicted ALT (in U/L) for key predictor",
+    subtitle = "Key redictor: Alcohol consumption",
+    x = "Predicted ALT (in U/L)",
+    y = "Actual ALT (in U/L)"
+  )
+
+p4 | p5
+```
+
+Based on the actual vs. prediction plots, neither the predictions from the 5-predictors model nor from the key predictor model show close similarity to the actual ALT vlalues. However, since the larger model is able to predict the ALT values across a continuum, it does appear to fit the actual data slightly more accurately, and it has a slightly more positive slope than the key predictors model.
+
+## Summarizing the Errors
+
+### Model 1 (5-predictors) Error Calculation
+
+I calculated the summarized errors for the large model.
+
+```{r}
+# RMSPE (Root Mean Squared Prediction Error)
+rmspe <- sqrt(mean((test_data$lbxsatsi - pred_invalt_1)^2))
+
+# MAPE (Mean Absolute Prediction Error)
+mape <- mean(abs((test_data$lbxsatsi - pred_invalt_1) / test_data$lbxsatsi)) * 100
+
+# MAE (Maximum Absolute Prediction Error)
+mae <- max(abs(test_data$lbxsatsi - pred_invalt_1))
+
+# validated R^2 (Squared Correlation of Actual and Predicted)
+validated_r2 <- cor(test_data$lbxsatsi, pred_invalt_1)^2
+
+# Print the results
+cat("RMSPE: ", rmspe, "\n")
+cat("MAPE: ", mape, "%\n")
+cat("MAE: ", mae, "\n")
+cat("Validated R^2: ", validated_r2, "\n")
+
+```
+
+### Model 2 (Key predictor) Error Calculation
+
+I calculated the summarized errors for the small model.
+
+```{r}
+# RMSPE (Root Mean Squared Prediction Error)
+rmspe <- sqrt(mean((test_data$lbxsatsi - pred_invalt_2)^2))
+
+# MAPE (Mean Absolute Prediction Error)
+mape <- mean(abs((test_data$lbxsatsi - pred_invalt_2) / test_data$lbxsatsi)) * 100
+
+# MAE (Maximum Absolute Prediction Error)
+mae <- max(abs(test_data$lbxsatsi - pred_invalt_2))
+
+# validated R^2 (Squared Correlation of Actual and Predicted)
+validated_r2 <- cor(test_data$lbxsatsi, pred_invalt_2)^2
+
+# Print the results
+cat("RMSPE: ", rmspe, "\n")
+cat("MAPE: ", mape, "%\n")
+cat("MAE: ", mae, "\n")
+cat("Validated R^2: ", validated_r2, "\n")
+```
+
+### Table of Summarized Errors
+
+Finally, I constructed a table of the error calculations.
+
+|       Model        | RMSPE  |  MAPE  |  MAE   | Validated R\^2 |
+|:------------------:|:------:|:------:|:------:|:--------------:|
+|  Model 1 (5-Pred)  | 29.633 | 99.63% | 337.95 |     0.053      |
+| Model 2 (Key Pred) | 29.631 | 99.64% | 337.95 |     0.009      |
+
+## Comparing the Models
+
+Based on the previous two sections with the visualized predictions and the calculated errors, I still prefer the larger model with five predictors. From the visualization, it appears to have a larger positive slope, which would mean that, while it does not closely approximate the ALT outcome, it does approximate ALT somewhat better than the key predictor model. Given the calculation of the summarizing errors, the RMSPE, MAPE, and MAE are all very similar for both models, indicating that both models have almost the same magnitude of error, average relative error as a percentage of actual values, and largest individual prediction errors. Therefore, my conclusion is based on the validated R-squared from the error calculations, and the larger model has a much higher validated R-squared than the smaller model.
+
+# Discussion
+
+## Chosen Model
+
+The model I have chosen is the larger model with the five predictors: Alcohol Consumption, Age, Sex, Race/Ethnicity, and Education.
+
+## Answering My Question
+
+My initial question for this research project was whether the alanine aminotransferase levels (ALT) of participants in the NHANES data set could be accurately modeled by the frequency of alcohol consumption of these participants. Given the results of my two models and that the model with five predictors was a better fit for the ALT outcome, rather than the model with the single, key predictor of alcohol consumption, I conclude that frequency of alcohol consumption alone is not an adequate predictor for ALT outcomes in is population of NHANES participants. This conclusion is limited because the ALT outcome variable was heavily skewed at the beginning of data analysis. This made proper analytical techniques difficult because of the skewness of the data and a lack of interpretable transformations to be applied to the distribution of ALT. While alcohol consumption may be related to ALT levels, it would require more nuanced statistical analysis to determine the relationship between these two variables.
+
+## Next Steps
+
+Since alcohol consumption causes liver damage and liver damage results in an elevated ALT, a logical next step for this analysis would be to restrict analysis of the ALT levels to a group of NHANES participants who have documented liver disease or cirrhosis. In this subset of participants, the effect of ALT may be easier to tease out.
+
+## Reflection
+
+If I had realized how skewed the data for the ALT outcome variable was and how many high outliers there were in the data, I would have either picked a different variable to analyze, or I would have restricted the ALT values that I was analyzing. I could have asked a different question, such as, does alcohol consumption model levels of ALT in the blood in NHANES participant who are at a low risk for liver damage (i.e.: have a lower ALT value). With this question, I could have restricted the ALT values to the normal physiological range of 7-55U/L. This restriction would have resulted in an outcome variable that had a distribution that was more normally distributed, and therefore it would have been easier to model with various predictors.
+
+# Session Information-try again
+
+```{r}
+xfun::session_info()
+```
